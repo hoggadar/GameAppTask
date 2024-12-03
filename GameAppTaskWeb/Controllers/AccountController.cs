@@ -2,6 +2,7 @@
 using GameAppTaskDataAccess.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameAppTaskWeb.Controllers
 {
@@ -16,10 +17,10 @@ namespace GameAppTaskWeb.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var users = _userManager.Users.ToList();
-            return View();
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
         }
 
         [HttpGet]
