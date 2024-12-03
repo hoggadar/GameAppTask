@@ -1,4 +1,4 @@
-﻿using GameAppTaskBusiness.DTOs;
+﻿using GameAppTaskBusiness.DTOs.Auth;
 using GameAppTaskDataAccess.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +18,13 @@ namespace GameAppTaskWeb.Controllers
 
         public IActionResult Index()
         {
+            var users = _userManager.Users.ToList();
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Signup()
+        {
             return View();
         }
 
@@ -26,6 +33,7 @@ namespace GameAppTaskWeb.Controllers
         {
             var newUser = new UserModel
             {
+                UserName = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
@@ -34,11 +42,17 @@ namespace GameAppTaskWeb.Controllers
             var result = await _userManager.CreateAsync(newUser, dto.Password);
             if (result.Succeeded)
             {
-                //await _userManager.AddToRoleAsync(newUser);
-                return Ok();
+                await _userManager.AddToRoleAsync(newUser, "User");
+                return RedirectToAction("Index", "Home");
             }
 
-            return BadRequest("Invalid signup attemp");
+            return View(dto);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
         }
 
         [HttpPost]
@@ -48,10 +62,17 @@ namespace GameAppTaskWeb.Controllers
 
             if (result.Succeeded)
             {
-                return Ok();
+                return RedirectToAction("Index", "Home");
             }
 
-            return BadRequest("Invalid login attempt");
+            return View(dto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
