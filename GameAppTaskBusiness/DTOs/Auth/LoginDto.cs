@@ -1,8 +1,6 @@
 ﻿namespace GameAppTaskBusiness.DTOs.Auth
 {
-    public class LoginDto
+    public class LoginDto : AuthBase
     {
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
     }
 }

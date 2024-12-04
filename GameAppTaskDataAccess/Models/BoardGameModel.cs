@@ -6,12 +6,12 @@ namespace GameAppTaskDataAccess.Models
     public class BoardGameModel
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = null!;
 
-        [Required]
+        [MaxLength(50), MinLength(3)]
         public string Title { get; set; } = null!;
-
-        [Required]
+        
+        [MaxLength(256)]
         public string Description { get; set; } = null!;
 
         public GenreEnum? Genre { get; set; }
@@ -23,5 +23,7 @@ namespace GameAppTaskDataAccess.Models
         public DateTime? ReleaseYear { get; set; }
 
         public string? ImagePath { get; set; } = null!;
+
+        public ICollection<FavouriteModel> Favourites { get; set; } = null!;
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameAppTaskDataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241203105738_InitialMigration")]
+    [Migration("20241204055059_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -27,15 +27,13 @@ namespace GameAppTaskDataAccess.Migrations
 
             modelBuilder.Entity("GameAppTaskDataAccess.Models.BoardGameModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<int?>("GameTime")
                         .HasColumnType("int");
@@ -54,11 +52,34 @@ namespace GameAppTaskDataAccess.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("BoardGames");
+                });
+
+            modelBuilder.Entity("GameAppTaskDataAccess.Models.FavouriteModel", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoardGameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardGameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favourites");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -274,13 +295,34 @@ namespace GameAppTaskDataAccess.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.HasDiscriminator().HasValue("UserModel");
+                });
+
+            modelBuilder.Entity("GameAppTaskDataAccess.Models.FavouriteModel", b =>
+                {
+                    b.HasOne("GameAppTaskDataAccess.Models.BoardGameModel", "BoardGame")
+                        .WithMany("Favourites")
+                        .HasForeignKey("BoardGameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameAppTaskDataAccess.Models.UserModel", "User")
+                        .WithMany("Favourites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BoardGame");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -332,6 +374,16 @@ namespace GameAppTaskDataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GameAppTaskDataAccess.Models.BoardGameModel", b =>
+                {
+                    b.Navigation("Favourites");
+                });
+
+            modelBuilder.Entity("GameAppTaskDataAccess.Models.UserModel", b =>
+                {
+                    b.Navigation("Favourites");
                 });
 #pragma warning restore 612, 618
         }

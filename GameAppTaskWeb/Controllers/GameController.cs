@@ -1,13 +1,28 @@
-﻿using GameAppTaskBusiness.DTOs.BoardGame;
+﻿using AutoMapper;
+using GameAppTaskBusiness.DTOs.BoardGame;
+using GameAppTaskBusiness.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameAppTaskWeb.Controllers
 {
     public class GameController : Controller
     {
-        public IActionResult Index()
+        private readonly IBoardGameService _boardGameService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<GameController> _logger;
+
+        public GameController(IBoardGameService boardGameService, IMapper mapper, ILogger<GameController> logger)
         {
-            return View();
+            _boardGameService = boardGameService;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var boardGames = await _boardGameService.GetAll();
+            return View(boardGames);
         }
 
         [HttpGet]
@@ -28,13 +43,13 @@ namespace GameAppTaskWeb.Controllers
             return View();
         }
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult Update()
         {
             return View();
         }
 
-        [HttpDelete]
+        [HttpGet]
         public IActionResult Delete()
         {
             return View();

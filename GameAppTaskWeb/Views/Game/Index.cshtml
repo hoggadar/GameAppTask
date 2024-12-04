@@ -1,5 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Index";
+﻿@using GameAppTaskBusiness.DTOs.BoardGame
+@model IEnumerable<BoardGameDto>
+@{
+    ViewData["Title"] = "BoardGame";
 }
 
-<h1>Hello world</h1>
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-primary" role="button" asp-area="" asp-controller="BoardGame" asp-action="Create">Create</a>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Genre</th>
+            <th>GameTime</th>
+            <th>NumberPlayers</th>
+            <th>ReleaseYear</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var boardGame in Model)
+        {
+            <tr>
+                <td>@boardGame.Id</td>
+                <td>@boardGame.Title</td>
+                <td>@boardGame.Description</td>
+                <td>@boardGame.Genre</td>
+                <td>@boardGame.GameTime</td>
+                <td>@boardGame.NumberPlayers</td>
+                <td>@boardGame.ReleaseYear</td>
+                <td>
+                    <a class="btn btn-warning" role="button" asp-area="" asp-controller="BoardGame" asp-action="Update" asp-route-id="@boardGame.Id">Update</a>
+                    <a class="btn btn-danger" role="button" asp-area="" asp-controller="BoardGame" asp-action="Delete" asp-route-id="@boardGame.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

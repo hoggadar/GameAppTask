@@ -1,8 +1,8 @@
 ﻿using GameAppTaskBusiness.DTOs.Auth;
 using GameAppTaskDataAccess.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameAppTaskWeb.Controllers
 {
@@ -15,12 +15,6 @@ namespace GameAppTaskWeb.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var users = await _userManager.Users.ToListAsync();
-            return View(users);
         }
 
         [HttpGet]
@@ -69,6 +63,7 @@ namespace GameAppTaskWeb.Controllers
             return View(dto);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Logout()
         {

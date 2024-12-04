@@ -4,8 +4,8 @@ using GameAppTaskDataAccess.Repositories.Interfaces;
 
 namespace GameAppTaskDataAccess.Repositories.Implementations
 {
-    public class GameRepository : Repository<BoardGameModel>, IGameRepository
+    public class UserRepository : Repository<UserModel>, IUserRepository
     {
-        public GameRepository(AppDbContext context) : base(context) { }
+        public UserRepository(AppDbContext context) : base(context) { }
     }
 }

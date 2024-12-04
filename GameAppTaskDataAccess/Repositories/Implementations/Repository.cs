@@ -18,7 +18,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<TEntity?> GetById(long id)
+        public async Task<TEntity?> GetById(string id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }

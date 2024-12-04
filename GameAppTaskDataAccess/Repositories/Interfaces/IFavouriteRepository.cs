@@ -2,7 +2,7 @@
 
 namespace GameAppTaskDataAccess.Repositories.Interfaces
 {
-    public interface IGameRepository : IRepository<BoardGameModel>
+    public interface IFavouriteRepository : IRepository<FavouriteModel>
     {
     }
 }
