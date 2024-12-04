@@ -2,6 +2,7 @@
 using GameAppTaskBusiness.DTOs.BoardGame;
 using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Models;
+using GameAppTaskDataAccess.Pagination;
 using GameAppTaskDataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -26,10 +27,9 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
         }
 
-        public async Task<IEnumerable<BoardGameDto>> GetAllByTitle(string title)
+        public async Task<PaginatedResult<BoardGameModel>> GetAllByTitle(string title, int pageIndex, int pageSize)
         {
-            var boardGames = await _boardGameRepo.GetAllByTitle(title);
-            return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
+            return await _boardGameRepo.GetAllByTitle(title, pageIndex, pageSize);
         }
 
         public async Task<BoardGameDto?> GetById(string id)

@@ -1,0 +1,41 @@
+﻿@using GameAppTaskDataAccess.Models
+@using GameAppTaskDataAccess.Pagination
+@model PaginatedResult<BoardGameModel>
+
+@{
+    ViewData["Title"] = "Board Games";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-primary" role="button" asp-area="" asp-controller="BoardGame" asp-action="Create">Create</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Genre</th>
+            <th>GameTime</th>
+            <th>NumberPlayer</th>
+            <th>ReleaseYear</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var boardGame in Model.Items)
+        {
+            <tr>
+                <td>boardGame.Image</td>
+                <td>boardGame.Id</td>
+                <td>boardGame.Title</td>
+                <td>boardGame.Description</td>
+                <td>boardGame.Genre</td>
+                <td>boardGame.GameTime</td>
+                <td>boardGame.NumberPlayers</td>
+                <td>boardGame.ReleaseYear</td>
+            </tr>
+        }
+    </tbody>
+</table>

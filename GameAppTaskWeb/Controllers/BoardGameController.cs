@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameAppTaskWeb.Controllers
 {
-    public class GameController : Controller
+    public class BoardGameController : Controller
     {
         private readonly IBoardGameService _boardGameService;
         private readonly IMapper _mapper;
-        private readonly ILogger<GameController> _logger;
+        private readonly ILogger<BoardGameController> _logger;
 
-        public GameController(IBoardGameService boardGameService, IMapper mapper, ILogger<GameController> logger)
+        public BoardGameController(IBoardGameService boardGameService, IMapper mapper, ILogger<BoardGameController> logger)
         {
             _boardGameService = boardGameService;
             _mapper = mapper;
@@ -19,9 +19,9 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string title = "", int pageIndex = 1, int pageSize = 10)
         {
-            var boardGames = await _boardGameService.GetAll();
+            var boardGames = await _boardGameService.GetAllByTitle(title, pageIndex, pageSize);
             return View(boardGames);
         }
 
