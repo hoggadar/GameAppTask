@@ -1,4 +1,5 @@
 ﻿using GameAppTaskDataAccess.Data;
+using GameAppTaskDataAccess.Enums;
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Pagination;
 using GameAppTaskDataAccess.Repositories.Interfaces;
@@ -14,8 +15,26 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
         {
             var query = _context.BoardGames.Where(p => p.Title.Contains(title));
             var totalCount = await query.CountAsync();
-            var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).OrderBy(p => p.Title).ToListAsync();
             return new PaginatedResult<BoardGameModel>(items, pageSize, pageIndex, totalCount);
+        }
+
+        public async Task<IEnumerable<BoardGameModel>> GetAllByUserId(string id)
+        {
+            var boardGames = await _context.Favourites
+                .Include(p => p.BoardGame)
+                .Where(p => p.UserId == id)
+                .Select(p => p.BoardGame)
+                .ToListAsync();
+            return boardGames;
+        }
+
+        public async Task<IEnumerable<BoardGameModel>> GetAllByGenre(GenreEnum genre)
+        {
+            var boardGames = await _context.BoardGames
+                .Where(p => p.Genre == genre)
+                .ToListAsync();
+            return boardGames;
         }
 
         public async Task<BoardGameModel?> GetByTitle(string title)

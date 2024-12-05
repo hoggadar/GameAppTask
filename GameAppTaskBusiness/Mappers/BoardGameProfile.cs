@@ -11,6 +11,7 @@ namespace GameAppTaskBusiness.Mappers
             CreateMap<BoardGameModel, BoardGameDto>();
             CreateMap<CreateBoardGameDto, BoardGameModel>();
             CreateMap<UpdateBoardGameDto, BoardGameModel>();
+            CreateMap<BoardGameDto, UpdateBoardGameDto>();
         }
     }
 }

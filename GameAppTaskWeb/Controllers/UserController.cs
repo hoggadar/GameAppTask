@@ -11,13 +11,11 @@ namespace GameAppTaskWeb.Controllers
     [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
-        private readonly UserManager<UserModel> _userManager;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public UserController(UserManager<UserModel> userManager, IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper)
         {
-            _userManager = userManager;
             _userService = userService;
             _mapper = mapper;
         }
@@ -44,8 +42,12 @@ namespace GameAppTaskWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
-            var createdUser = await _userService.Create(dto);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var createdUser = await _userService.Create(dto);
+                RedirectToAction("Index");
+            }
+            return View(dto);
         }
 
         [HttpGet]
@@ -59,8 +61,12 @@ namespace GameAppTaskWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(string id, UpdateUserDto dto)
         {
-            var updatedUser = await _userService.Update(id, dto);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                var updatedUser = await _userService.Update(id, dto);
+                RedirectToAction("Index");
+            }
+            return View(dto);
         }
 
         [HttpGet]

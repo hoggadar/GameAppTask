@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("HomeConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 
 // controllers and views
 builder.Services.AddControllersWithViews();
@@ -39,6 +39,12 @@ builder.Services.AddScoped<RoleDataSeeder>();
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(BoardGameProfile));
 builder.Services.AddAutoMapper(typeof(FavouriteProfile));
+
+// logs
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 
 var app = builder.Build();
 

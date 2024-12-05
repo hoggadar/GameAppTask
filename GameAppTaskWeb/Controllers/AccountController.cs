@@ -1,4 +1,7 @@
-﻿using GameAppTaskBusiness.DTOs.Auth;
+﻿using AutoMapper;
+using GameAppTaskBusiness.DTOs.Auth;
+using GameAppTaskBusiness.DTOs.User;
+using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,11 +11,15 @@ namespace GameAppTaskWeb.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IUserService _userService;
         private readonly UserManager<UserModel> _userManager;
         private readonly SignInManager<UserModel> _signInManager;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
+        public AccountController(IUserService userService, IMapper mapper, UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
         {
+            _userService = userService;
+            _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -26,21 +33,9 @@ namespace GameAppTaskWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Signup(SignupDto dto)
         {
-            var newUser = new UserModel
-            {
-                UserName = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-            };
-
-            var result = await _userManager.CreateAsync(newUser, dto.Password);
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(newUser, "User");
-                return RedirectToAction("Index", "Home");
-            }
-
+            var createUserDto = _mapper.Map<CreateUserDto>(dto);
+            var createdUser = await _userService.Create(createUserDto);
+            if (createdUser != null) return RedirectToAction("Login"); 
             return View(dto);
         }
 
@@ -54,12 +49,7 @@ namespace GameAppTaskWeb.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, isPersistent: false, lockoutOnFailure: false);
-
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
+            if (result.Succeeded) return RedirectToAction("Index", "Home");
             return View(dto);
         }
 

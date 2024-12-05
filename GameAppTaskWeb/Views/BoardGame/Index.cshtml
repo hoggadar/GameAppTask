@@ -1,6 +1,7 @@
-﻿@using GameAppTaskDataAccess.Models
-@using GameAppTaskDataAccess.Pagination
-@model PaginatedResult<BoardGameModel>
+﻿@using GameAppTaskBusiness.DTOs.BoardGame
+@using GameAppTaskDataAccess.Enums
+@using GameAppTaskDataAccess.Models
+@model IEnumerable<BoardGameDto>
 
 @{
     ViewData["Title"] = "Board Games";
@@ -8,9 +9,35 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<a class="btn btn-primary" role="button" asp-area="" asp-controller="BoardGame" asp-action="Create">Create</a>
+<div class="d-flex justify-content-between align-items-end">
+    @if (User.IsInRole("Admin"))
+    {
+        <div>
+            <a class="btn btn-primary" role="button" asp-area="" asp-controller="BoardGame" asp-action="Create">Create</a>
+        </div>
+    }
+    <div>
+        <form method="get" class="container" asp-controller="BoardGame" asp-action="Index">
+            <div class="row d-flex align-items-end">
+                <div class="form-group col">
+                    <label for="genreSelect">Выберите жанр:</label>
+                    <select id="genreSelect" name="genre" class="form-control">
+                        <option value="">Все жанры</option>
+                        @foreach (var genre in Enum.GetValues(typeof(GenreEnum)))
+                        {
+                            <option value="@genre">@genre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Фильтровать</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<table>
+<table class="table table-hover">
     <thead>
         <tr>
             <th>Image</th>
@@ -21,20 +48,29 @@
             <th>GameTime</th>
             <th>NumberPlayer</th>
             <th>ReleaseYear</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var boardGame in Model.Items)
+        @foreach(var boardGame in Model)
         {
             <tr>
-                <td>boardGame.Image</td>
-                <td>boardGame.Id</td>
-                <td>boardGame.Title</td>
-                <td>boardGame.Description</td>
-                <td>boardGame.Genre</td>
-                <td>boardGame.GameTime</td>
-                <td>boardGame.NumberPlayers</td>
-                <td>boardGame.ReleaseYear</td>
+                <td>@boardGame.ImagePath</td>
+                <td>@boardGame.Id</td>
+                <td>@boardGame.Title</td>
+                <td>@boardGame.Description</td>
+                <td>@boardGame.Genre</td>
+                <td>@boardGame.GameTime</td>
+                <td>@boardGame.NumberPlayers</td>
+                <td>@boardGame.ReleaseYear</td>
+                <td>
+                    <a class="btn btn-warning" role="button" asp-area="" asp-controller="BoardGame" asp-action="AddToFavourites" asp-route-boardGameId="@boardGame.Id">Add</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="btn btn-warning" role="button" asp-area="" asp-controller="BoardGame" asp-action="Update" asp-route-id="@boardGame.Id">Update</a>
+                        <a class="btn btn-danger" role="button" asp-area="" asp-controller="BoardGame" asp-action="Delete" asp-route-id="@boardGame.Id">Delete</a>
+                    }
+                </td>
             </tr>
         }
     </tbody>

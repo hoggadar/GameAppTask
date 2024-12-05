@@ -8,8 +8,9 @@ namespace GameAppTaskBusiness.Mappers
     {
         public FavouriteProfile()
         {
-            CreateMap<FavouriteBase, FavouriteModel>();
-            CreateMap<FavouriteModel, FavouriteBase>();
+            CreateMap<FavouriteDto, FavouriteModel>();
+            CreateMap<FavouriteModel, FavouriteDto>();
+            CreateMap<CreateFavouriteDto, FavouriteModel>();
         }
     }
 }

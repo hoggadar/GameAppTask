@@ -1,4 +1,5 @@
 ﻿using GameAppTaskBusiness.DTOs.BoardGame;
+using GameAppTaskDataAccess.Enums;
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Pagination;
 
@@ -8,6 +9,8 @@ namespace GameAppTaskBusiness.Interfaces
     {
         Task<IEnumerable<BoardGameDto>> GetAll();
         Task<PaginatedResult<BoardGameModel>> GetAllByTitle(string title, int pageIndex, int pageSize);
+        Task<IEnumerable<BoardGameDto>> GetAllByUserId(string id);
+        Task<IEnumerable<BoardGameDto>> GetAllByGenre(GenreEnum? genre);
         Task<BoardGameDto?> GetById(string id);
         Task<BoardGameDto?> GetByTitle(string title);
         Task<BoardGameDto> Create(CreateBoardGameDto dto);

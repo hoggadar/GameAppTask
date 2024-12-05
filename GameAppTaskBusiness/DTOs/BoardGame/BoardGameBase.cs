@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameAppTaskDataAccess.Enums;
 
 namespace GameAppTaskBusiness.DTOs.BoardGame
 {
@@ -8,7 +8,7 @@ namespace GameAppTaskBusiness.DTOs.BoardGame
 
         public string Description { get; set; } = null!;
 
-        public string? Genre { get; set; }
+        public GenreEnum? Genre { get; set; }
 
         public int? GameTime { get; set; }
 

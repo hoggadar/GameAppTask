@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GameAppTaskBusiness.DTOs.BoardGame;
 using GameAppTaskBusiness.Interfaces;
+using GameAppTaskDataAccess.Enums;
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Pagination;
 using GameAppTaskDataAccess.Repositories.Interfaces;
@@ -32,6 +33,20 @@ namespace GameAppTaskBusiness.Services
             return await _boardGameRepo.GetAllByTitle(title, pageIndex, pageSize);
         }
 
+        public async Task<IEnumerable<BoardGameDto>> GetAllByUserId(string id)
+        {
+            var boardGames = await _boardGameRepo.GetAllByUserId(id);
+            return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
+        }
+
+        public async Task<IEnumerable<BoardGameDto>> GetAllByGenre(GenreEnum? genre)
+        {
+            IEnumerable<BoardGameModel> boardGames;
+            if (genre == null) boardGames = await _boardGameRepo.GetAll();
+            else boardGames = await _boardGameRepo.GetAllByGenre(genre.Value);
+            return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
+        }
+
         public async Task<BoardGameDto?> GetById(string id)
         {
             var boardGame = await _boardGameRepo.GetById(id);
@@ -49,6 +64,7 @@ namespace GameAppTaskBusiness.Services
         public async Task<BoardGameDto> Create(CreateBoardGameDto dto)
         {
             var newBoardGame = _mapper.Map<BoardGameModel>(dto);
+            newBoardGame.Id = Guid.NewGuid().ToString();
             var createdBoardGame = await _boardGameRepo.Create(newBoardGame);
             return _mapper.Map<BoardGameDto>(createdBoardGame);
         }

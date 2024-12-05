@@ -1,0 +1,59 @@
+﻿@using GameAppTaskBusiness.DTOs.BoardGame
+@using GameAppTaskDataAccess.Enums
+@model UpdateBoardGameDto
+
+@{
+    ViewData["Title"] = "Update Board Game";
+}
+
+<form method="post" enctype="multipart/form-data" asp-controller="BoardGame" asp-action="Update">
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genre" class="control-label"></label>
+        <select asp-for="Genre" class="form-control">
+            <option value="">Select Genre</option>
+            @foreach (var genre in Enum.GetValues(typeof(GenreEnum)).Cast<GenreEnum>())
+            {
+                <option value="@genre">@genre</option>
+            }
+        </select>
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="GameTime" class="control-label"></label>
+        <input asp-for="GameTime" type="number" class="form-control" />
+        <span asp-validation-for="GameTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NumberPlayers" class="control-label"></label>
+        <input asp-for="NumberPlayers" type="number" class="form-control" />
+        <span asp-validation-for="NumberPlayers" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ReleaseYear" class="control-label"></label>
+        <input asp-for="ReleaseYear" type="date" class="form-control" />
+        <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+    </div>
+
+    @* <div class="form-group">
+    <label class="control-label"></label>
+    <input type="file" name="ImageFile" class="form-control" />
+    <span class="text-danger"></span>
+    </div> *@
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
