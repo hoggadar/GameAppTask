@@ -1,13 +1,11 @@
-﻿@using GameAppTaskBusiness.DTOs.BoardGame
-@model IEnumerable<BoardGameDto>
+﻿@using GameAppTaskBusiness.DTOs.User
+@model UserWithBoardGamesDto
 
 @{
     ViewData["Title"] = "Favourite Board Games";
 }
 
 <h2>@ViewData["Title"]</h2>
-
-<a class="btn btn-primary" role="button" asp-area="" asp-controller="Profile" asp-action="Index">Back</a>
 
 <table class="table table-hover">
     <thead>
@@ -24,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var boardGame in Model)
+        @foreach (var boardGame in Model.BoardGames)
         {
             <tr>
                 <td><img class="board-game-img" src="~/images/@boardGame.ImagePath" /></td>
@@ -36,7 +34,10 @@
                 <td>@boardGame.NumberPlayers</td>
                 <td>@boardGame.ReleaseYear</td>
                 <td>
-                    <a class="btn btn-danger" role="button" asp-area="" asp-controller="Profile" asp-action="DeleteFromFavourite" asp-route-id="@boardGame.Id">Delete</a>
+                    <a class="btn btn-danger" role="button" asp-area=""
+                    asp-controller="User" asp-action="DeleteFromFavourite"
+                    asp-route-userId="@Model.User.Id"
+                    asp-route-boardGameId="@boardGame.Id">Delete</a>
                 </td>
             </tr>
         }

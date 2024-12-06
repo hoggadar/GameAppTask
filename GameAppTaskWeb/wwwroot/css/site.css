@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,29 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 8px;
+    text-align: left;
+}
+
+.board-game-img {
+    width: 100px;
+    height: auto;
+    object-fit: cover;
+}
+
+.board-game-desc {
+    resize: none;
+}
+
+.fixed-column {
+    min-width: 150px;
+    width: 150px;
 }

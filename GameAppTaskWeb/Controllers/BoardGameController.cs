@@ -5,6 +5,7 @@ using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace GameAppTaskWeb.Controllers
@@ -28,9 +29,11 @@ namespace GameAppTaskWeb.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Index(GenreEnum? genre)
+        public async Task<IActionResult> Index(string searchString, GenreEnum? selectedGenre, int pageNumber = 1, int pageSize = 2)
         {
-            var boardGames = await _boardGameService.GetAllByGenre(genre);
+            ViewData["CurrentSearch"] = searchString;
+            ViewData["SelectedFilter"] = selectedGenre.ToString();
+            var boardGames = await _boardGameService.GetAllByTitleAndGenre(searchString, selectedGenre, pageNumber, pageSize);
             return View(boardGames);
         }
 
@@ -43,48 +46,35 @@ namespace GameAppTaskWeb.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateBoardGameDto dto)
+        public async Task<IActionResult> Create(CreateBoardGameDto dto, IFormFile image)
         {
-            if (ModelState.IsValid)
+            try
             {
-                dto.ImagePath = string.Empty;
+                if (image != null && image.Length > 0)
+                {
+                    var path = Path.Combine(_environment.WebRootPath, "images");
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    var filePath = Path.Combine(path, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+                    dto.ImagePath = fileName;
+                }
+
                 var createdBoardGame = await _boardGameService.Create(dto);
-                return RedirectToAction("Index");
+
+                return View(dto);
             }
-            return View(dto);
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return View(dto);
+            }
+            
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> Create(CreateBoardGameDto dto, IFormFile ImageFile)
-        //{
-        //    try
-        //    {
-        //        if (ImageFile != null)
-        //        {
-        //            string folder = Path.Combine(_environment.WebRootPath, "images");
-        //            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-        //            string temp = Path.GetFileName(ImageFile.FileName);
-        //            string timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        //            string imageName = $"{Path.GetFileNameWithoutExtension(temp)}_{timeStamp}{Path.GetExtension(temp)}";
-        //            string imagePath = Path.Combine(folder, imageName);
-        //            using (var stream = new FileStream(imagePath, FileMode.Create))
-        //            {
-        //                await ImageFile.CopyToAsync(stream);
-        //            }
-        //            dto.ImagePath = imageName;
-
-        //            var createdBoardGame = await _boardGameService.Create(dto);
-        //            return RedirectToAction("Index");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex.Message);
-        //    }
-
-        //    return View(dto);
-        //}
 
         [Authorize(Roles = "Admin")]
         [HttpGet]

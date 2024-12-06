@@ -11,12 +11,17 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
     {
         public BoardGameRepository(AppDbContext context) : base(context) { }
 
-        public async Task<PaginatedResult<BoardGameModel>> GetAllByTitle(string title, int pageIndex, int pageSize)
+        public async Task<PaginatedResult<BoardGameModel>> GetAllByTitleAndGenre(string title, GenreEnum? genre, int pageNumber, int pageSize)
         {
-            var query = _context.BoardGames.Where(p => p.Title.Contains(title));
+            IQueryable<BoardGameModel> query = _context.BoardGames.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(title)) query = query.Where(p => p.Title.Contains(title));
+            if (genre.HasValue) query = query.Where(p => p.Genre == genre);
             var totalCount = await query.CountAsync();
-            var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).OrderBy(p => p.Title).ToListAsync();
-            return new PaginatedResult<BoardGameModel>(items, pageSize, pageIndex, totalCount);
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return new PaginatedResult<BoardGameModel>(items, pageSize, pageNumber, totalCount);
         }
 
         public async Task<IEnumerable<BoardGameModel>> GetAllByUserId(string id)

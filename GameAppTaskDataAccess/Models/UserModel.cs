@@ -5,9 +5,11 @@ namespace GameAppTaskDataAccess.Models
 {
     public class UserModel : IdentityUser
     {
+        [Required]
         [MaxLength(32), MinLength(2)]
         public string FirstName { get; set; } = null!;
         
+        [Required]
         [MaxLength(32), MinLength(2)]
         public string LastName { get; set; } = null!;
 

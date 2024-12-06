@@ -28,9 +28,9 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
         }
 
-        public async Task<PaginatedResult<BoardGameModel>> GetAllByTitle(string title, int pageIndex, int pageSize)
+        public async Task<PaginatedResult<BoardGameModel>> GetAllByTitleAndGenre(string title, GenreEnum? genre, int pageIndex, int pageSize)
         {
-            return await _boardGameRepo.GetAllByTitle(title, pageIndex, pageSize);
+            return await _boardGameRepo.GetAllByTitleAndGenre(title, genre, pageIndex, pageSize);
         }
 
         public async Task<IEnumerable<BoardGameDto>> GetAllByUserId(string id)
@@ -47,17 +47,28 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
         }
 
-        public async Task<BoardGameDto?> GetById(string id)
+        public async Task<BoardGameDto> GetById(string id)
         {
             var boardGame = await _boardGameRepo.GetById(id);
-            if (boardGame == null) return null;
+            if (boardGame == null)
+            {
+                string message = $"Board Game with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             return _mapper.Map<BoardGameDto>(boardGame);
         }
 
-        public async Task<BoardGameDto?> GetByTitle(string title)
+        public async Task<BoardGameDto> GetByTitle(string title)
         {
             var boardGame = await _boardGameRepo.GetByTitle(title);
-            if (boardGame == null) return null;
+            string message;
+            if (boardGame == null)
+            {
+                message = $"BoardGame with Title = {title} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             return _mapper.Map<BoardGameDto>(boardGame);
         }
 
@@ -69,19 +80,31 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<BoardGameDto>(createdBoardGame);
         }
 
-        public async Task<BoardGameDto?> Update(string id, UpdateBoardGameDto dto)
+        public async Task<BoardGameDto> Update(string id, UpdateBoardGameDto dto)
         {
             var boardGame = await _boardGameRepo.GetById(id);
-            if (boardGame == null) return null;
+            string message;
+            if (boardGame == null)
+            {
+                message = $"BoardGame with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             var boardGameToUpdate = _mapper.Map(dto, boardGame);
             var updatedBoardGame = await _boardGameRepo.Update(boardGameToUpdate);
             return _mapper.Map<BoardGameDto>(updatedBoardGame);
         }
 
-        public async Task<BoardGameDto?> Delete(string id)
+        public async Task<BoardGameDto> Delete(string id)
         {
             var boardGame = await _boardGameRepo.GetById(id);
-            if (boardGame == null) return null;
+            string message;
+            if (boardGame == null)
+            {
+                message = $"BoardGame with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             var deletedBoardGame = await _boardGameRepo.Delete(boardGame);
             return _mapper.Map<BoardGameDto>(deletedBoardGame);
         }

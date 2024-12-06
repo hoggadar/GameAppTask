@@ -26,9 +26,15 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<FavouriteDto>>(favourites);
         }
 
-        public async Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId)
+        public async Task<FavouriteModel> GetByUserIdAndBoardGameId(string userId, string boardGameId)
         {
             var favourite = await _favouriteRepo.GetByUserIdAndBoardGameId(userId, boardGameId);
+            if (favourite == null)
+            {
+                string message = $"Favourite with UserID = {userId} and BoardGameID = {boardGameId} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             return favourite;
         }
 
@@ -40,10 +46,15 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<FavouriteDto>(createdFavourite);
         }
 
-        public async Task<FavouriteDto?> Delete(string id)
+        public async Task<FavouriteDto> Delete(string id)
         {
             var favourite = await _favouriteRepo.GetById(id);
-            if (favourite == null) return null;
+            if (favourite == null)
+            {
+                string message = $"Favourite with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             var deletedFavourite = await _favouriteRepo.Delete(favourite);
             return _mapper.Map<FavouriteDto>(deletedFavourite);
         }

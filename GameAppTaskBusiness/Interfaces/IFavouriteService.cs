@@ -6,8 +6,8 @@ namespace GameAppTaskBusiness.Interfaces
     public interface IFavouriteService
     {
         Task<IEnumerable<FavouriteDto>> GetAll();
-        Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId);
+        Task<FavouriteModel> GetByUserIdAndBoardGameId(string userId, string boardGameId);
         Task<FavouriteDto> Create(CreateFavouriteDto dto);
-        Task<FavouriteDto?> Delete(string id);
+        Task<FavouriteDto> Delete(string id);
     }
 }

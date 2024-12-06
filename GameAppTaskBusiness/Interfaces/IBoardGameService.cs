@@ -8,13 +8,13 @@ namespace GameAppTaskBusiness.Interfaces
     public interface IBoardGameService
     {
         Task<IEnumerable<BoardGameDto>> GetAll();
-        Task<PaginatedResult<BoardGameModel>> GetAllByTitle(string title, int pageIndex, int pageSize);
+        Task<PaginatedResult<BoardGameModel>> GetAllByTitleAndGenre(string title, GenreEnum? genre, int pageIndex, int pageSize);
         Task<IEnumerable<BoardGameDto>> GetAllByUserId(string id);
         Task<IEnumerable<BoardGameDto>> GetAllByGenre(GenreEnum? genre);
-        Task<BoardGameDto?> GetById(string id);
-        Task<BoardGameDto?> GetByTitle(string title);
+        Task<BoardGameDto> GetById(string id);
+        Task<BoardGameDto> GetByTitle(string title);
         Task<BoardGameDto> Create(CreateBoardGameDto dto);
-        Task<BoardGameDto?> Update(string id, UpdateBoardGameDto dto);
-        Task<BoardGameDto?> Delete(string id);
+        Task<BoardGameDto> Update(string id, UpdateBoardGameDto dto);
+        Task<BoardGameDto> Delete(string id);
     }
 }

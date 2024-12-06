@@ -2,6 +2,7 @@
 using GameAppTaskBusiness.DTOs.User;
 using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Models;
+using GameAppTaskDataAccess.Pagination;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,37 +28,79 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<UserDto?> GetById(string id)
+        public async Task<PaginatedResult<UserDto>> GetAllByParams(string email, string firstName, string lastName, int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<UserDto> GetById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return null;
+            if (user == null)
+            {
+                string message = $"User with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<UserDto?> Create(CreateUserDto dto)
+        public async Task<UserDto> Create(CreateUserDto dto)
         {
             var newUser = _mapper.Map<UserModel>(dto);
             var result = await _userManager.CreateAsync(newUser, dto.Password);
-            if (!result.Succeeded) return null;
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                string message = $"User creation failed: {errors}";
+                _logger.LogError(message);
+                throw new InvalidOperationException(message);
+            }
             await _userManager.AddToRoleAsync(newUser, "User");
             return _mapper.Map<UserDto>(newUser);
         }
 
-        public async Task<UserDto?> Update(string id, UpdateUserDto dto)
+        public async Task<UserDto> Update(string id, UpdateUserDto dto)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return null;
+            string message;
+            if (user == null)
+            {
+                message = $"User with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
             var userToUpdate = _mapper.Map(dto, user);
             var result = await _userManager.UpdateAsync(userToUpdate);
-            if (!result.Succeeded) return null;
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                message = $"User update failed: {errors}";
+                _logger.LogError(message);
+                throw new InvalidOperationException(message);
+            }
             return _mapper.Map<UserDto>(userToUpdate);
         }
 
-        public async Task<UserModel?> Delete(string id)
+        public async Task<UserDto> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user != null) await _userManager.DeleteAsync(user);
-            return user;
+            string message;
+            if (user == null)
+            {
+                message = $"User with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                message = $"User deletion failed: {errors}";
+                _logger.LogError(message);
+                throw new InvalidOperationException(message);
+            }
+            return _mapper.Map<UserDto>(user);
         }
     }
 }

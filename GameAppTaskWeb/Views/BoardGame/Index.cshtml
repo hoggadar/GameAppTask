@@ -1,13 +1,14 @@
 ﻿@using GameAppTaskBusiness.DTOs.BoardGame
 @using GameAppTaskDataAccess.Enums
 @using GameAppTaskDataAccess.Models
-@model IEnumerable<BoardGameDto>
+@using GameAppTaskDataAccess.Pagination
+@model PaginatedResult<BoardGameModel>
+
+<h2>Board Games</h2>
 
 @{
-    ViewData["Title"] = "Board Games";
+    var temp = ViewData["SelectedFilter"]?.ToString();
 }
-
-<h2>@ViewData["Title"]</h2>
 
 <div class="d-flex justify-content-between align-items-end">
     @if (User.IsInRole("Admin"))
@@ -16,62 +17,87 @@
             <a class="btn btn-primary" role="button" asp-area="" asp-controller="BoardGame" asp-action="Create">Create</a>
         </div>
     }
-    <div>
+   <div>
         <form method="get" class="container" asp-controller="BoardGame" asp-action="Index">
-            <div class="row d-flex align-items-end">
+            <div class="row d-flex flex-row">
                 <div class="form-group col">
-                    <label for="genreSelect">Выберите жанр:</label>
-                    <select id="genreSelect" name="genre" class="form-control">
-                        <option value="">Все жанры</option>
+                    <label for="titleSearch">Search:</label>
+                    <input id="titleSearch" name="SearchString" class="form-control" value="@ViewData["CurrentSearch"]" />
+                </div>
+                <div class="form-group col">
+                    <label for="genreSelect">Select Genre:</label>
+                    <select id="genreSelect" name="selectedGenre" class="form-control">
+                        <option value="">All</option>
                         @foreach (var genre in Enum.GetValues(typeof(GenreEnum)))
                         {
-                            <option value="@genre">@genre</option>
+                            var selectedOption = (temp == genre.ToString()) ? "selected" : "";
+                            <option value="@genre" selectedOption>@genre</option>
                         }
                     </select>
                 </div>
                 <div class="col">
-                    <button type="submit" class="btn btn-primary">Фильтровать</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<table class="table table-hover">
+<table class="table">
     <thead>
         <tr>
-            <th>Image</th>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Genre</th>
-            <th>GameTime</th>
-            <th>NumberPlayer</th>
-            <th>ReleaseYear</th>
-            <th>Actions</th>
+            <th scope="col">Image</th>
+            <th scope="col" class="fixed-column">Id</th>
+            <th scope="col" class="fixed-column">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Genre</th>
+            <th scope="col">GameTime</th>
+            <th scope="col">NumberPlayer</th>
+            <th scope="col" class="fixed-column">ReleaseYear</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var boardGame in Model)
+        @foreach(var boardGame in Model.Items)
         {
             <tr>
-                <td>@boardGame.ImagePath</td>
-                <td>@boardGame.Id</td>
+                <td><img class="board-game-img" src="~/images/@boardGame.ImagePath" /></td>
+                <td scope="row">@boardGame.Id</td>
                 <td>@boardGame.Title</td>
-                <td>@boardGame.Description</td>
+                <td><textarea class="board-game-desc" rows="3" readonly>@boardGame.Description</textarea></td>
                 <td>@boardGame.Genre</td>
                 <td>@boardGame.GameTime</td>
                 <td>@boardGame.NumberPlayers</td>
                 <td>@boardGame.ReleaseYear</td>
                 <td>
-                    <a class="btn btn-warning" role="button" asp-area="" asp-controller="BoardGame" asp-action="AddToFavourites" asp-route-boardGameId="@boardGame.Id">Add</a>
+                    <a class="btn btn-success btn-sm" role="button" asp-area="" asp-controller="BoardGame" asp-action="AddToFavourites" asp-route-boardGameId="@boardGame.Id">Add</a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a class="btn btn-warning" role="button" asp-area="" asp-controller="BoardGame" asp-action="Update" asp-route-id="@boardGame.Id">Update</a>
-                        <a class="btn btn-danger" role="button" asp-area="" asp-controller="BoardGame" asp-action="Delete" asp-route-id="@boardGame.Id">Delete</a>
+                        <a class="btn btn-warning btn-sm" role="button" asp-area="" asp-controller="BoardGame" asp-action="Update" asp-route-id="@boardGame.Id">Update</a>
+                        <a class="btn btn-danger btn-sm" role="button" asp-area="" asp-controller="BoardGame" asp-action="Delete" asp-route-id="@boardGame.Id">Delete</a>
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-searchString="@ViewData["CurrentSearch"]"
+   asp-route-selectedGenre="@ViewData["SelectedFilter"]"
+   asp-route-pageNumber="@(Model.CurrentPage - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-searchString="@ViewData["CurrentSearch"]"
+   asp-route-selectedGenre="@ViewData["SelectedFilter"]"
+   asp-route-pageNumber="@(Model.CurrentPage + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
