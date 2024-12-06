@@ -26,15 +26,16 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<FavouriteDto>>(favourites);
         }
 
-        public async Task<FavouriteModel> GetByUserIdAndBoardGameId(string userId, string boardGameId)
+
+        public async Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId)
         {
             var favourite = await _favouriteRepo.GetByUserIdAndBoardGameId(userId, boardGameId);
-            if (favourite == null)
-            {
-                string message = $"Favourite with UserID = {userId} and BoardGameID = {boardGameId} not found.";
-                _logger.LogWarning(message);
-                throw new KeyNotFoundException(message);
-            }
+            //if (favourite == null)
+            //{
+            //    string message = $"Favourite with UserID = {userId} and BoardGameID = {boardGameId} not found.";
+            //    _logger.LogWarning(message);
+            //    throw new KeyNotFoundException(message);
+            //}
             return favourite;
         }
 
