@@ -9,7 +9,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="d-flex flex-column justify-content-between">
+@* <div class="d-flex flex-column justify-content-between">
     <div>
         <div class="d-flex justify-content-between align-items-end">
             <div>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <table class="table table-hover">
+        <table id="usersTable" class="table table-hover">
             <thead>
                 <tr>
                     <th>Id</th>
@@ -87,8 +87,74 @@
             </a>
         </div>
     </div>
+</div> *@
+
+<div class="d-flex flex-column justify-content-between">
+    <div>
+        <div>
+            <a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
+        </div>
+
+        <div class="mt-2 mb-2">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search users..."/>
+        </div>
+
+        <table class="table table-hover" id="usersTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-
-
-
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#usersTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "searching": false,
+                "ajax": {
+                    "url": '@Url.Action("GetAll", "User")',
+                    "type": "GET",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.searchString = $('#searchInput').val();
+                    }
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "email" },
+                    { "data": "firstName" },
+                    { "data": "lastName" },
+                    {
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return `
+                                <a class="btn btn-info" role="button" href="@Url.Action("FavouriteBoardGames", "User")/${row.id}">Info</a>
+                                <a class="btn btn-warning" role="button" href="@Url.Action("Update", "User")/${row.id}">Update</a>
+                                <a class="btn btn-danger" role="button" href="@Url.Action("Delete", "User")/${row.id}">Delete</a>
+                            `;
+                        }
+                    }
+                ],
+                "columnDefs": [
+                    { orderable: false, targets: [0, 3] }
+                ]
+            });
+            $('#searchInput').on('keyup', function() {
+                table.ajax.reload();
+            });
+        });
+    </script>
+}

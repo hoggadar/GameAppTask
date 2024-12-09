@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAppTaskWeb", "GameAppTaskWeb\GameAppTaskWeb.csproj", "{083FE680-F92A-471C-B37F-ED0EACF656DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameAppTaskWeb", "GameAppTaskWeb\GameAppTaskWeb.csproj", "{083FE680-F92A-471C-B37F-ED0EACF656DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAppTaskDataAccess", "GameAppTaskDataAccess\GameAppTaskDataAccess.csproj", "{678D5E2B-B7A7-41EA-891D-4DE7BF553C5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameAppTaskDataAccess", "GameAppTaskDataAccess\GameAppTaskDataAccess.csproj", "{678D5E2B-B7A7-41EA-891D-4DE7BF553C5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameAppTaskBusiness", "GameAppTaskBusiness\GameAppTaskBusiness.csproj", "{A73C65F9-4F4E-407F-A638-9FA55B5B117C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameAppTaskBusiness", "GameAppTaskBusiness\GameAppTaskBusiness.csproj", "{A73C65F9-4F4E-407F-A638-9FA55B5B117C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5D8EA87-A45E-4482-A905-4E70419FA83A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,12 +3,18 @@ using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Pagination;
 using GameAppTaskDataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GameAppTaskDataAccess.Repositories.Implementations
 {
     public class UserRepository : Repository<UserModel>, IUserRepository
     {
-        public UserRepository(AppDbContext context) : base(context) { }
+        private readonly ILogger<UserRepository> _logger;
+
+        public UserRepository(AppDbContext context, ILogger<UserRepository> logger) : base(context)
+        {
+            _logger = logger;
+        }
 
         public async Task<PaginatedResult<UserModel>> GetAllByParams(string email, string sortParam, int pageNumber, int pageSize)
         {
@@ -25,10 +31,12 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
                 default:
                     break;
             }
+            _logger.LogInformation($"Skip: {(pageNumber - 1) * pageSize}, Take: {pageSize}");
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .OrderBy(p => p.Email)
                 .ToListAsync();
             return new PaginatedResult<UserModel>(items, pageSize, pageNumber, totalCount);
         }

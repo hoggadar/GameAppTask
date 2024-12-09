@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("ContainerConnectionString");
 
 // controllers and views
 builder.Services.AddControllersWithViews();
@@ -63,11 +63,21 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// seed user roles
+// migration and seed user roles
 using (var scope = app.Services.CreateScope())
 {
-    var roleSeeder = scope.ServiceProvider.GetRequiredService<RoleDataSeeder>();
-    await roleSeeder.SeedData();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        dbContext.Database.Migrate();
+        var roleSeeder = services.GetRequiredService<RoleDataSeeder>();
+        await roleSeeder.SeedData();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
 }
 
 app.Run();

@@ -42,6 +42,28 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAll(string searchString, int start = 0, int length = 10)
+        {
+            try
+            {
+                var pageIndex = (start / length) + 1;
+                _logger.LogInformation($"Start: {start}, Length: {length}, Page Index: {pageIndex}");
+                var users = await _userService.GetAllByParams(searchString, "", pageIndex, length);
+                var result = new
+                {
+                    recordsFiltered = users.TotalCount,
+                    recordsTotal = users.TotalCount,
+                    data = users.Items
+                };
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> FavouriteBoardGames(string id)
         {
             var user = await _userService.GetById(id);
