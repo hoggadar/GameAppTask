@@ -25,11 +25,13 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string sortParam, int pageNumber = 1, int pageSize = 2)
         {
+            ViewData["CurrentSearch"] = searchString;
+            ViewData["FirstNameSortParam"] = String.IsNullOrWhiteSpace(sortParam) ? "FirstName" : "";
             try
             {
-                var users = await _userService.GetAll();
+                var users = await _userService.GetAllByParams(searchString, sortParam, pageNumber, pageSize);
                 return View(users);
             }
             catch (Exception ex)
@@ -113,7 +115,7 @@ namespace GameAppTaskWeb.Controllers
                 if (ModelState.IsValid)
                 {
                     var updatedUser = await _userService.Update(id, dto);
-                    RedirectToAction("Index");
+                    return RedirectToAction("Index");
                 }
                 return View(dto);
             } catch (Exception ex)

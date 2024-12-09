@@ -3,6 +3,7 @@ using GameAppTaskBusiness.DTOs.User;
 using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Pagination;
+using GameAppTaskDataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,12 +13,14 @@ namespace GameAppTaskBusiness.Services
     public class UserService : IUserService
     {
         private readonly UserManager<UserModel> _userManager;
+        private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(UserManager<UserModel> userManager, IMapper mapper, ILogger<UserService> logger)
+        public UserService(UserManager<UserModel> userManager, IUserRepository userRepo, IMapper mapper, ILogger<UserService> logger)
         {
             _userManager = userManager;
+            _userRepo = userRepo;
             _mapper = mapper;
             _logger = logger;
         }
@@ -28,9 +31,11 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<PaginatedResult<UserDto>> GetAllByParams(string email, string firstName, string lastName, int pageIndex, int pageSize)
+        public async Task<PaginatedResult<UserDto>> GetAllByParams(string email, string sortParam, int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            var paginatedResult = await _userRepo.GetAllByParams(email, sortParam, pageIndex, pageSize);
+            var users = _mapper.Map<IEnumerable<UserDto>>(paginatedResult.Items);
+            return new PaginatedResult<UserDto>(users, pageSize, pageIndex, paginatedResult.TotalCount);
         }
 
         public async Task<UserDto> GetById(string id)

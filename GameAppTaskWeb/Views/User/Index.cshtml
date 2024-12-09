@@ -1,38 +1,94 @@
 ﻿@using GameAppTaskBusiness.DTOs.User
-@model IEnumerable<UserDto>
+@using GameAppTaskDataAccess.Pagination
+@model PaginatedResult<UserDto>
 
 @{
     ViewData["Title"] = "Users";
+    var temp = (String.IsNullOrWhiteSpace(ViewData["FirstNameSortParam"]?.ToString())) ? "FirstName" : "";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
+<div class="d-flex flex-column justify-content-between">
+    <div>
+        <div class="d-flex justify-content-between align-items-end">
+            <div>
+                <a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
+            </div>
+            <div>
+                <form method="get" class="container" asp-controller="User" asp-action="Index">
+                    <div class="row d-flex flex-row">
+                        <div class="form-group col">
+                            <label for="emailSearch">Search By Email:</label>
+                            <input id="emailSearch" name="SearchString" class="form-control" value="@ViewData["CurrentSearch"]" />
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Email</th>
-            <th>FirstName</th>
-            <th>LastName</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var user in Model)
-        {
-            <tr>
-                <td>@user.Id</td>
-                <td>@user.Email</td>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>
-                    <a class="btn btn-info" role="button" asp-area="" asp-controller="User" asp-action="FavouriteBoardGames" asp-route-id="@user.Id">Info</a>
-                    <a class="btn btn-warning" role="button" asp-area="" asp-controller="User" asp-action="Update" asp-route-id="@user.Id">Update</a>
-                    <a class="btn btn-danger" role="button" asp-area="" asp-controller="User" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
-                </td>
-            </tr>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>
+                        <a asp-area="" asp-controller="User" asp-action="Index"
+                           asp-route-sortParam="@ViewData["FirstNameSortParam"]"
+                           asp-route-searchString="@ViewData["CurrentSearch"]"
+                           asp-route-pageNumber="@Model.CurrentPage">FirstName</a>
+                    </th>
+                    <th>LastName</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Items)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>
+                            <a class="btn btn-info" role="button" asp-area="" asp-controller="User" asp-action="FavouriteBoardGames" asp-route-id="@user.Id">Info</a>
+                            <a class="btn btn-warning" role="button" asp-area="" asp-controller="User" asp-action="Update" asp-route-id="@user.Id">Update</a>
+                            <a class="btn btn-danger" role="button" asp-area="" asp-controller="User" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
         }
-    </tbody>
-</table>
+
+        <div>
+            <a asp-action="Index"
+               asp-route-searchString="@ViewData["CurrentSearch"]"
+               asp-route-sortParam="@temp"
+               asp-route-pageNumber="@(Model.CurrentPage - 1)"
+               class="btn btn-default @prevDisabled">
+                Previous
+            </a>
+            <a asp-action="Index"
+               asp-route-searchString="@ViewData["CurrentSearch"]"
+               asp-route-sortParam="@temp"
+               asp-route-pageNumber="@(Model.CurrentPage + 1)"
+               class="btn btn-default @nextDisabled">
+                Next
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+

@@ -26,7 +26,6 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<FavouriteDto>>(favourites);
         }
 
-
         public async Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId)
         {
             var favourite = await _favouriteRepo.GetByUserIdAndBoardGameId(userId, boardGameId);
