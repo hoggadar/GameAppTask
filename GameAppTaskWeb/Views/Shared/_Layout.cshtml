@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/GameAppTaskWeb.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
 </head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -56,6 +57,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <div id="vue-app"></div>
             @RenderBody()
         </main>
     </div>
@@ -68,8 +70,23 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        const { createApp, ref } = Vue;
+        const app = createApp({
+            setup() {
+                const message = ref('Hello from Vue 3!');
+                return { message };
+            },
+            template: `<div>{{ message }}</div>`
+        });
+        app.mount('#vue-app');
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

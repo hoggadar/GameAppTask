@@ -14,5 +14,7 @@ namespace GameAppTaskDataAccess.Models
         public string LastName { get; set; } = null!;
 
         public ICollection<FavouriteModel> Favourites { get; set; } = null!;
+        public ICollection<FriendRequestModel> Senders { get; set; } = null!;
+        public ICollection<FriendRequestModel> Recipients { get; set; } = null!;
     }
 }

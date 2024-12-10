@@ -25,5 +25,6 @@ namespace GameAppTaskDataAccess.Models
         public string? ImagePath { get; set; } = null!;
 
         public ICollection<FavouriteModel> Favourites { get; set; } = null!;
+        public ICollection<CommentModel> Comments { get; set; } = null!;
     }
 }
