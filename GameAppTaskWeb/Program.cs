@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ContainerConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 
 // controllers and views
 builder.Services.AddControllersWithViews();

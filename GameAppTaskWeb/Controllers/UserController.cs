@@ -25,30 +25,19 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string searchString, string sortParam, int pageNumber = 1, int pageSize = 2)
+        public IActionResult Index()
         {
-            ViewData["CurrentSearch"] = searchString;
-            ViewData["FirstNameSortParam"] = String.IsNullOrWhiteSpace(sortParam) ? "FirstName" : "";
-            try
-            {
-                var users = await _userService.GetAllByParams(searchString, sortParam, pageNumber, pageSize);
-                return View(users);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Message: {ex.Message}");
-                return StatusCode(500, ex.Message);
-            }
+            return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string searchString, int start = 0, int length = 10)
+        public async Task<IActionResult> GetAll(string searchString, string sortParam, int start = 0, int length = 10)
         {
             try
             {
                 var pageIndex = (start / length) + 1;
-                _logger.LogInformation($"Start: {start}, Length: {length}, Page Index: {pageIndex}");
-                var users = await _userService.GetAllByParams(searchString, "", pageIndex, length);
+                _logger.LogInformation($"Start: {start}, Length: {length}, Page Index: {pageIndex}, Sort Select: {sortParam}");
+                var users = await _userService.GetAllByParams(searchString, sortParam, pageIndex, length);
                 var result = new
                 {
                     recordsFiltered = users.TotalCount,

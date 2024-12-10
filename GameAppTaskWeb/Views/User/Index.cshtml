@@ -1,6 +1,6 @@
 ﻿@using GameAppTaskBusiness.DTOs.User
 @using GameAppTaskDataAccess.Pagination
-@model PaginatedResult<UserDto>
+@* @model PaginatedResult<UserDto> *@
 
 @{
     ViewData["Title"] = "Users";
@@ -95,8 +95,20 @@
             <a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
         </div>
 
-        <div class="mt-2 mb-2">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search users..."/>
+        <div class="d-flex justify-content-between">
+            <div class="mt-2 mb-2">
+                <select id="sortSelect" class="form-control">
+                    <option value="">Select Sort</option>
+                    <option value="FirstNameAsc">First Name (Asc)</option>
+                    <option value="FirstNameDesc">First Name (Desc)</option>
+                    <option value="LastNameAsc">Last Name (Asc)</option>
+                    <option value="LastNameDesc">Last Name (Desc)</option>
+                </select>
+            </div>
+
+            <div class="mt-2 mb-2">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search users..." />
+            </div>
         </div>
 
         <table class="table table-hover" id="usersTable">
@@ -124,13 +136,16 @@
                 "processing": true,
                 "serverSide": true,
                 "searching": false,
+                "sorting": false,
                 "ajax": {
                     "url": '@Url.Action("GetAll", "User")',
                     "type": "GET",
                     "datatype": "json",
                     "data": function (d) {
                         d.searchString = $('#searchInput').val();
+                        d.sortParam = $('#sortSelect').val();
                     }
+
                 },
                 "columns": [
                     { "data": "id" },
@@ -148,11 +163,8 @@
                         }
                     }
                 ],
-                "columnDefs": [
-                    { orderable: false, targets: [0, 3] }
-                ]
             });
-            $('#searchInput').on('keyup', function() {
+            $('#searchInput, #sortSelect').on('change keyup', function () {
                 table.ajax.reload();
             });
         });

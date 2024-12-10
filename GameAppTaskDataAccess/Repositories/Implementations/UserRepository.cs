@@ -22,21 +22,26 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             if (!string.IsNullOrWhiteSpace(email)) query = query.Where(p => p.Email.Contains(email));
             switch (sortParam)
             {
-                case "FirstName":
+                case "FirstNameAsc":
                     query = query.OrderBy(p => p.FirstName);
+                    break;
+                case "FirstNameDesc":
+                    query = query.OrderByDescending(p => p.FirstName);
                     break;
                 case "LastName":
                     query = query.OrderBy(p => p.LastName);
                     break;
+                case "LastNameDesc":
+                    query = query.OrderByDescending(p => p.LastName);
+                    break;
                 default:
+                    query = query.OrderBy(p => p.Email);
                     break;
             }
-            _logger.LogInformation($"Skip: {(pageNumber - 1) * pageSize}, Take: {pageSize}");
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .OrderBy(p => p.Email)
                 .ToListAsync();
             return new PaginatedResult<UserModel>(items, pageSize, pageNumber, totalCount);
         }
