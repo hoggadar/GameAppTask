@@ -22,7 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // auth
-builder.Services.AddIdentity<UserModel, IdentityRole>()
+builder.Services.AddIdentity<UserModel, RoleModel>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -39,6 +39,7 @@ builder.Services.AddScoped<RoleDataSeeder>();
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(BoardGameProfile));
 builder.Services.AddAutoMapper(typeof(FavouriteProfile));
+builder.Services.AddAutoMapper(typeof(CommentProfile));
 
 // logs
 builder.Logging.ClearProviders();

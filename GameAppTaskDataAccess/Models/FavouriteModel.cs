@@ -6,14 +6,14 @@ namespace GameAppTaskDataAccess.Models
     public class FavouriteModel
     {
         [Key]
-        public string Id { get; set; } = null!;
+        public Guid Id { get; set; }
 
         [ForeignKey("UserId")]
-        public string UserId { get; set; } = null!;
+        public Guid UserId { get; set; }
         public UserModel User { get; set; } = null!;
 
         [ForeignKey("BoardGameId")]
-        public string BoardGameId { get; set; } = null!;
+        public Guid BoardGameId { get; set; }
         public BoardGameModel BoardGame { get; set; } = null!;
     }
 }

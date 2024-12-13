@@ -1,0 +1,58 @@
+﻿@model BoardGameWithCommentsModel
+
+@{
+}
+
+<div class="board-game-info">
+    <img src="@Model.BoardGame.ImagePath"/>
+    <table class="table">
+        <tr>
+            <td>Id</td>
+            <td>@Model.BoardGame.Id</td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>@Model.BoardGame.Title</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>@Model.BoardGame.Description</td>
+        </tr>
+        <tr>
+            <td>Genre</td>
+            <td>@Model.BoardGame.Genre</td>
+        </tr>
+        <tr>
+            <td>GameTime</td>
+            <td>@Model.BoardGame.GameTime</td>
+        </tr>
+        <tr>
+            <td>NumberPlayers</td>
+            <td>@Model.BoardGame.NumberPlayers</td>
+        </tr>
+        <tr>
+            <td>ReleaseYear</td>
+            <td>@Model.BoardGame.ReleaseYear</td>
+        </tr>
+    </table>
+</div>
+
+<div class="comments-section">
+    <h3>Comments</h3>
+    @if (Model.Comments.Any())
+    {
+        <ul class="comments-list">
+            @foreach (var comment in Model.Comments)
+            {
+                @* <li>
+                    <strong>@comment.AuthorName</strong>: @comment.Content
+                    <em>(@comment.CreatedAt.ToShortDateString())</em>
+                </li> *@
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No Comments</p>
+    }
+</div>

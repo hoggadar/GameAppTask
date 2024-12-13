@@ -18,7 +18,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
 
         public async Task<PaginatedResult<UserModel>> GetAllByParams(string email, string sortParam, int pageNumber, int pageSize)
         {
-            IQueryable<UserModel> query = _context.CustomUsers.AsQueryable();
+            IQueryable<UserModel> query = _context.Users.AsQueryable();
             if (!string.IsNullOrWhiteSpace(email)) query = query.Where(p => p.Email.Contains(email));
             switch (sortParam)
             {

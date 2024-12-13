@@ -6,18 +6,18 @@ namespace GameAppTaskDataAccess.Models
     public class FriendRequestModel
     {
         [Key]
-        public string Id { get; set; } = null!;
+        public Guid Id { get; set; }
 
         public bool IsAccepted { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey("SenderId")]
-        public string SenderId { get; set; } = null!;
+        public Guid SenderId { get; set; }
         public UserModel Sender { get; set; } = null!;
 
         [ForeignKey("RecipientId")]
-        public string RecipientId { get; set; } = null!;
+        public Guid RecipientId { get; set; }
         public UserModel Recipient { get; set; } = null!;
     }
 }

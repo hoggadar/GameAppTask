@@ -2,5 +2,6 @@
 {
     public class FavouriteDto : FavouriteBase
     {
+        public string Id { get; set; } = null!;
     }
 }

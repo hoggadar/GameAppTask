@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameAppTaskDataAccess.Models
 {
-    public class UserModel : IdentityUser
+    public class UserModel : IdentityUser<Guid>
     {
-        [Required]
-        [MaxLength(32), MinLength(2)]
+        [PersonalData]
+        [Column(TypeName = "nvarchar(100)")]
         public string FirstName { get; set; } = null!;
-        
-        [Required]
-        [MaxLength(32), MinLength(2)]
+
+        [PersonalData]
+        [Column(TypeName = "nvarchar(100)")]
         public string LastName { get; set; } = null!;
 
         public ICollection<FavouriteModel> Favourites { get; set; } = null!;

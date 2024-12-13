@@ -1,13 +1,11 @@
 ﻿using GameAppTaskDataAccess.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace GameAppTaskDataAccess.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<UserModel, RoleModel, Guid>
     {
-        public DbSet<UserModel> CustomUsers { get; set; }
         public DbSet<BoardGameModel> BoardGames { get; set; }
         public DbSet<FavouriteModel> Favourites { get; set; }
         public DbSet<FriendRequestModel> Friends { get; set; }
@@ -17,6 +15,8 @@ namespace GameAppTaskDataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             builder.Entity<FriendRequestModel>()
                 .HasOne(fr => fr.Sender)
                 .WithMany(u => u.Senders)

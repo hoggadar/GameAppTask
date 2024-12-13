@@ -6,7 +6,7 @@ namespace GameAppTaskDataAccess.Models
     public class BoardGameModel
     {
         [Key]
-        public string Id { get; set; } = null!;
+        public Guid Id { get; set; }
 
         [MaxLength(50), MinLength(3)]
         public string Title { get; set; } = null!;

@@ -3,6 +3,7 @@ using GameAppTaskBusiness.DTOs.BoardGame;
 using GameAppTaskBusiness.DTOs.Favourite;
 using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Enums;
+using GameAppTaskWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
@@ -14,14 +15,16 @@ namespace GameAppTaskWeb.Controllers
     {
         private readonly IBoardGameService _boardGameService;
         private readonly IFavouriteService _favouriteService;
+        private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BoardGameController> _logger;
 
-        public BoardGameController(IBoardGameService boardGameService, IFavouriteService favouriteService, IMapper mapper, IWebHostEnvironment environment, ILogger<BoardGameController> logger)
+        public BoardGameController(IBoardGameService boardGameService, IFavouriteService favouriteService, ICommentService commentService, IMapper mapper, IWebHostEnvironment environment, ILogger<BoardGameController> logger)
         {
             _boardGameService = boardGameService;
             _favouriteService = favouriteService;
+            _commentService = commentService;
             _mapper = mapper;
             _environment = environment;
             _logger = logger;
@@ -35,6 +38,19 @@ namespace GameAppTaskWeb.Controllers
             ViewData["SelectedFilter"] = selectedGenre.ToString();
             var boardGames = await _boardGameService.GetAllByTitleAndGenre(searchString, selectedGenre, pageNumber, pageSize);
             return View(boardGames);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BoardGamePage(string boardGameId)
+        {
+            var boardGame = await _boardGameService.GetById(boardGameId);
+            var comments = await _commentService.GetAllByGameId(boardGameId);
+            var model = new BoardGameWithCommentsModel
+            {
+                BoardGame = boardGame,
+                Comments = comments
+            };
+            return View(model);
         }
 
         [Authorize(Roles = "Admin")]

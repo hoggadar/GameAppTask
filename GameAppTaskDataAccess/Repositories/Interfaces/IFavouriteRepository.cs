@@ -4,6 +4,6 @@ namespace GameAppTaskDataAccess.Repositories.Interfaces
 {
     public interface IFavouriteRepository : IRepository<FavouriteModel>
     {
-        Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId);
+        Task<FavouriteModel?> GetByUserIdAndBoardGameId(Guid userId, Guid boardGameId);
     }
 }

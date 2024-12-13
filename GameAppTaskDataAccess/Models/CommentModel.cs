@@ -6,7 +6,7 @@ namespace GameAppTaskDataAccess.Models
     public class CommentModel
     {
         [Key]
-        public string Id { get; set; } = null!;
+        public Guid Id { get; set; }
 
         [MaxLength(50), MinLength(3)]
         public string Text { get; set; } = null!;
@@ -14,15 +14,15 @@ namespace GameAppTaskDataAccess.Models
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey("UserId")]
-        public string UserId { get; set; } = null!;
+        public Guid UserId { get; set; }
         public UserModel User { get; set; } = null!;
 
         [ForeignKey("BoardGameId")]
-        public string BoardGameId { get; set; } = null!;
+        public Guid BoardGameId { get; set; }
         public BoardGameModel BoardGame { get; set; } = null!;
 
         [ForeignKey("ParentCommentId")]
-        public string? ParentCommentId { get; set; }
+        public Guid? ParentCommentId { get; set; }
         public CommentModel? ParentCommentModel { get; set; }
     }
 }

@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GameAppTaskDataAccess.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameAppTaskDataAccess.Data.DataSeeders
 {
     public class RoleDataSeeder
     {
         private static readonly string[] RoleNames = { "Admin", "User" };
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<RoleModel> _roleManager;
         
-        public RoleDataSeeder(RoleManager<IdentityRole> roleManager)
+        public RoleDataSeeder(RoleManager<RoleModel> roleManager)
         {
             _roleManager = roleManager;
         }
@@ -18,7 +19,7 @@ namespace GameAppTaskDataAccess.Data.DataSeeders
             {
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await _roleManager.CreateAsync(new RoleModel { Name = role });
                 }
             }
         }

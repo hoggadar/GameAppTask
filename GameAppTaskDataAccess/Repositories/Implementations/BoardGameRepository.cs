@@ -24,7 +24,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             return new PaginatedResult<BoardGameModel>(items, pageSize, pageNumber, totalCount);
         }
 
-        public async Task<IEnumerable<BoardGameModel>> GetAllByUserId(string id)
+        public async Task<IEnumerable<BoardGameModel>> GetAllByUserId(Guid id)
         {
             var boardGames = await _context.Favourites
                 .Include(p => p.BoardGame)
@@ -45,6 +45,15 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
         public async Task<BoardGameModel?> GetByTitle(string title)
         {
             var boardGame = await _context.BoardGames.FirstOrDefaultAsync(p => p.Title == title);
+            return boardGame;
+        }
+
+        public async Task<BoardGameModel?> GetWithCommentsByGameId(Guid id)
+        {
+            var boardGame = await _context.BoardGames
+                .Include(p => p.Comments)
+                .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
             return boardGame;
         }
     }

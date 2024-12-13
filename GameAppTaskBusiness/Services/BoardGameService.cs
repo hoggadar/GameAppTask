@@ -35,7 +35,14 @@ namespace GameAppTaskBusiness.Services
 
         public async Task<IEnumerable<BoardGameDto>> GetAllByUserId(string id)
         {
-            var boardGames = await _boardGameRepo.GetAllByUserId(id);
+            if (!Guid.TryParse(id, out Guid parsedId))
+            {
+                string message = $"Incorrect Guid format userId: {id}";
+                _logger.LogWarning(message);
+                throw new FormatException(message);
+                
+            }
+            var boardGames = await _boardGameRepo.GetAllByUserId(parsedId);
             return _mapper.Map<IEnumerable<BoardGameDto>>(boardGames);
         }
 
@@ -49,10 +56,16 @@ namespace GameAppTaskBusiness.Services
 
         public async Task<BoardGameDto> GetById(string id)
         {
-            var boardGame = await _boardGameRepo.GetById(id);
+            if (!Guid.TryParse(id, out Guid parsedId))
+            {
+                string message = $"Incorrect Guid format boardGameId: {id}";
+                _logger.LogWarning(message);
+                throw new FormatException(message);
+            }
+            var boardGame = await _boardGameRepo.GetById(parsedId);
             if (boardGame == null)
             {
-                string message = $"Board Game with ID = {id} not found.";
+                string message = $"BoardGame with ID = {id} not found.";
                 _logger.LogWarning(message);
                 throw new KeyNotFoundException(message);
             }
@@ -62,10 +75,9 @@ namespace GameAppTaskBusiness.Services
         public async Task<BoardGameDto> GetByTitle(string title)
         {
             var boardGame = await _boardGameRepo.GetByTitle(title);
-            string message;
             if (boardGame == null)
             {
-                message = $"BoardGame with Title = {title} not found.";
+                string message = $"BoardGame with Title = {title} not found.";
                 _logger.LogWarning(message);
                 throw new KeyNotFoundException(message);
             }
@@ -75,15 +87,21 @@ namespace GameAppTaskBusiness.Services
         public async Task<BoardGameDto> Create(CreateBoardGameDto dto)
         {
             var newBoardGame = _mapper.Map<BoardGameModel>(dto);
-            newBoardGame.Id = Guid.NewGuid().ToString();
+            newBoardGame.Id = Guid.NewGuid();
             var createdBoardGame = await _boardGameRepo.Create(newBoardGame);
             return _mapper.Map<BoardGameDto>(createdBoardGame);
         }
 
         public async Task<BoardGameDto> Update(string id, UpdateBoardGameDto dto)
         {
-            var boardGame = await _boardGameRepo.GetById(id);
             string message;
+            if (!Guid.TryParse(id, out Guid parsedId))
+            {
+                message = $"Incorrect Guid format boardGameId: {id}";
+                _logger.LogWarning(message);
+                throw new FormatException(message);
+            }
+            var boardGame = await _boardGameRepo.GetById(parsedId);
             if (boardGame == null)
             {
                 message = $"BoardGame with ID = {id} not found.";
@@ -97,8 +115,14 @@ namespace GameAppTaskBusiness.Services
 
         public async Task<BoardGameDto> Delete(string id)
         {
-            var boardGame = await _boardGameRepo.GetById(id);
             string message;
+            if (!Guid.TryParse(id, out Guid parsedId))
+            {
+                message = $"Incorrect Guid format boardGameId: {id}";
+                _logger.LogWarning(message);
+                throw new FormatException(message);
+            }
+            var boardGame = await _boardGameRepo.GetById(parsedId);
             if (boardGame == null)
             {
                 message = $"BoardGame with ID = {id} not found.";

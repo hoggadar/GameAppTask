@@ -1,0 +1,21 @@
+<!-- <script>
+      document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        const formData = new FormData(this);
+    
+        fetch('http://localhost:5234/api/Mail/SendMail', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error');
+          }
+          return response.json();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      });
+    </script> -->

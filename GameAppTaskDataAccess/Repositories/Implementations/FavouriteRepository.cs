@@ -9,7 +9,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
     {
         public FavouriteRepository(AppDbContext context) : base(context) { }
 
-        public async Task<FavouriteModel?> GetByUserIdAndBoardGameId(string userId, string boardGameId)
+        public async Task<FavouriteModel?> GetByUserIdAndBoardGameId(Guid userId, Guid boardGameId)
         {
             var favourite = await _context.Favourites.FirstOrDefaultAsync(p => p.UserId == userId && p.BoardGameId == boardGameId);
             return favourite;
