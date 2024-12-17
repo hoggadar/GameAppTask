@@ -8,5 +8,8 @@ namespace GameAppTaskDataAccess.Models
     {
         [Column(TypeName = "nvarchar(256)")]
         public string? Description { get; set; } = null!;
+
+        public virtual ICollection<UserRoleModel> UserRoles { get; set; }
+        public virtual ICollection<RoleClaimModel> RoleClaims { get; set; }
     }
 }

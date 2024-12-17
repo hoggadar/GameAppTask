@@ -6,7 +6,6 @@ using GameAppTaskDataAccess.Enums;
 using GameAppTaskWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace GameAppTaskWeb.Controllers

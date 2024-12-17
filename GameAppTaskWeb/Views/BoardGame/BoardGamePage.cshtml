@@ -3,8 +3,48 @@
 @{
 }
 
+<div>
+    <form method="post" class="container" asp-controller="Comment" asp-action="Create">
+        <div class="form-group">
+            <label class="control-label"></label>
+            <textarea class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+
+@section Script{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#comment-form').submit(function(event) {
+                event.preventDefault();
+
+                var commentContent = $('#CommentContent').val();
+                var boardGameId = $(this).data('board-game-id');
+
+                $.ajax({
+                    url: '/Comment/CreateComment',
+                    type: 'POST',
+                    data: {
+                        commentContent: commentContent,
+                        boardGameId: boardGameId
+                    },
+                    success: function(data) {
+                        $('#comments-list').html(data);
+                        $('#CommentContent').val('');
+                    },
+                    error: function() {
+                        alert('Произошла ошибка при добавлении комментария.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
 <div class="board-game-info">
-    <img src="@Model.BoardGame.ImagePath"/>
+    <img class="board-game-img" src="~/images/@Model.BoardGame.ImagePath" />
     <table class="table">
         <tr>
             <td>Id</td>
@@ -44,10 +84,10 @@
         <ul class="comments-list">
             @foreach (var comment in Model.Comments)
             {
-                @* <li>
-                    <strong>@comment.AuthorName</strong>: @comment.Content
+                <li>
+                    <strong>@comment.UserId</strong>: @comment.Content
                     <em>(@comment.CreatedAt.ToShortDateString())</em>
-                </li> *@
+                </li>
             }
         </ul>
     }

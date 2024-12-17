@@ -30,9 +30,11 @@ builder.Services.AddIdentity<UserModel, RoleModel>()
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBoardGameRepository, BoardGameRepository>();
 builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBoardGameService, BoardGameService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<RoleDataSeeder>();
 
 // mappers
