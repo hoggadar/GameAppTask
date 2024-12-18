@@ -61,7 +61,7 @@ namespace GameAppTaskBusiness.Services
                 _logger.LogError(message);
                 throw new InvalidOperationException(message);
             }
-            await _userManager.AddToRoleAsync(newUser, "Admin");
+            await _userManager.AddToRoleAsync(newUser, "User");
             return _mapper.Map<UserDto>(newUser);
         }
 

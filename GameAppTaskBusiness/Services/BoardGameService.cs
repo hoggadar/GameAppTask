@@ -84,6 +84,26 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<BoardGameDto>(boardGame);
         }
 
+        public async Task<BoardGameWithCommentsDto> GetByIdWithComments(string id)
+        {
+            if (!Guid.TryParse(id, out Guid parsedId))
+            {
+                string message = $"Incorrect Guid format boardGameId: {id}";
+                _logger.LogWarning(message);
+                throw new FormatException(message);
+            }
+
+            var boardGame = await _boardGameRepo.GetByIdWithComments(parsedId);
+            if (boardGame == null)
+            {
+                string message = $"BoardGame with ID = {id} not found.";
+                _logger.LogWarning(message);
+                throw new KeyNotFoundException(message);
+            }
+
+            return _mapper.Map<BoardGameWithCommentsDto>(boardGame);
+        }
+
         public async Task<BoardGameDto> Create(CreateBoardGameDto dto)
         {
             var newBoardGame = _mapper.Map<BoardGameModel>(dto);

@@ -13,6 +13,7 @@ namespace GameAppTaskBusiness.Interfaces
         Task<IEnumerable<BoardGameDto>> GetAllByGenre(GenreEnum? genre);
         Task<BoardGameDto> GetById(string id);
         Task<BoardGameDto> GetByTitle(string title);
+        Task<BoardGameWithCommentsDto> GetByIdWithComments(string id);
         Task<BoardGameDto> Create(CreateBoardGameDto dto);
         Task<BoardGameDto> Update(string id, UpdateBoardGameDto dto);
         Task<BoardGameDto> Delete(string id);

@@ -42,14 +42,33 @@ namespace GameAppTaskWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> BoardGamePage(string boardGameId)
         {
-            var boardGame = await _boardGameService.GetById(boardGameId);
-            var comments = await _commentService.GetAllByGameId(boardGameId);
-            var model = new BoardGameWithCommentsModel
-            {
-                BoardGame = boardGame,
-                Comments = comments
-            };
+            var model = await _boardGameService.GetByIdWithComments(boardGameId);
             return View(model);
+        }
+
+        // TEST ENDPOINT
+        [HttpGet]
+        public async Task<ActionResult<BoardGameWithCommentsDto>> GetByIdWithComments()
+        {
+            try
+            {
+                string temp = "88190E80-933F-44D4-A20E-E0C1B68D9A63";
+                var boardGame = await _boardGameService.GetByIdWithComments(temp);
+                return Ok(boardGame);
+            }
+            catch (FormatException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting board game with comments");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [Authorize(Roles = "Admin")]

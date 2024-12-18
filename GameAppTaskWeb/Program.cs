@@ -43,6 +43,17 @@ builder.Services.AddAutoMapper(typeof(BoardGameProfile));
 builder.Services.AddAutoMapper(typeof(FavouriteProfile));
 builder.Services.AddAutoMapper(typeof(CommentProfile));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 // logs
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -54,6 +65,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseCors("AllowAll");
 
 app.UseStaticFiles();
 

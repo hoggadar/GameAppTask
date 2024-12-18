@@ -14,5 +14,14 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             var comments = await _context.Comments.Where(p => p.BoardGameId == boardGameId).ToListAsync();
             return comments;
         }
+
+        public async Task<CommentModel?> GetLastByGameId(Guid boardGameId)
+        {
+            var comment = await _context.Comments
+                .Where(p => p.BoardGameId == boardGameId)
+                .OrderByDescending(p => p.CreatedAt)
+                .FirstOrDefaultAsync();
+            return comment;
+        }
     }
 }

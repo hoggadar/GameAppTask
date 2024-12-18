@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameAppTaskWeb.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserService _userService;

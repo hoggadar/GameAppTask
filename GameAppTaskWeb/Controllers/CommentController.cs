@@ -1,16 +1,26 @@
 ﻿using GameAppTaskBusiness.DTOs.Comment;
-using Microsoft.AspNetCore.Authorization;
+using GameAppTaskBusiness.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameAppTaskWeb.Controllers
 {
-    [Authorize]
     public class CommentController : Controller
     {
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateCommentDto dto)
+        private readonly ICommentService _commentService;
+        private readonly ILogger<CommentController> _logger;
+
+        public CommentController(ICommentService commentService, ILogger<CommentController> logger)
         {
-            return Ok(dto);
+            _commentService = commentService;
+            _logger = logger;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index([FromBody] CreateCommentDto dto)
+        {
+            _logger.LogInformation($"from dto: {dto.Text} {dto.UserId} {dto.BoardGameId} {dto.ParentCommentId}");
+            var createdComment = await _commentService.Create(dto);
+            return Json(createdComment);
         }
     }
 }

@@ -10,6 +10,6 @@ namespace GameAppTaskDataAccess.Repositories.Interfaces
         Task<IEnumerable<BoardGameModel>> GetAllByUserId(Guid id);
         Task<IEnumerable<BoardGameModel>> GetAllByGenre(GenreEnum genre);
         Task<BoardGameModel?> GetByTitle(string title);
-        Task<BoardGameModel?> GetWithCommentsByGameId(Guid id);
+        Task<BoardGameModel?> GetByIdWithComments(Guid id);
     }
 }

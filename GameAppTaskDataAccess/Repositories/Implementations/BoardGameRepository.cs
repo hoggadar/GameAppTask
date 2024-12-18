@@ -48,11 +48,11 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             return boardGame;
         }
 
-        public async Task<BoardGameModel?> GetWithCommentsByGameId(Guid id)
+        public async Task<BoardGameModel?> GetByIdWithComments(Guid id)
         {
             var boardGame = await _context.BoardGames
                 .Include(p => p.Comments)
-                .ThenInclude(p => p.User)
+                    .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
             return boardGame;
         }
