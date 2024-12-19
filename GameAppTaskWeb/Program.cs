@@ -31,10 +31,12 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBoardGameRepository, BoardGameRepository>();
 builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IFriendRequestRepository, FriendRequestRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBoardGameService, BoardGameService>();
 builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IFriendRequestService, FriendRequestService>();
 builder.Services.AddScoped<RoleDataSeeder>();
 
 // mappers
@@ -42,6 +44,7 @@ builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(BoardGameProfile));
 builder.Services.AddAutoMapper(typeof(FavouriteProfile));
 builder.Services.AddAutoMapper(typeof(CommentProfile));
+builder.Services.AddAutoMapper(typeof(FriendRequestProfile));
 
 builder.Services.AddCors(options =>
 {

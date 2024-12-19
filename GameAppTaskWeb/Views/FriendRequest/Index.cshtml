@@ -1,0 +1,106 @@
+﻿@using GameAppTaskBusiness.DTOs.User
+@model IEnumerable<UserDto>
+
+@{
+}
+
+<div class="d-flex flex-column justify-content-between">
+    <div>
+        <div>
+            <a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <div class="mt-2 mb-2">
+                <select id="sortSelect" class="form-control">
+                    <option value="">Select Sort</option>
+                    <option value="FirstNameAsc">First Name (Asc)</option>
+                    <option value="FirstNameDesc">First Name (Desc)</option>
+                    <option value="LastNameAsc">Last Name (Asc)</option>
+                    <option value="LastNameDesc">Last Name (Desc)</option>
+                </select>
+            </div>
+
+            <div class="mt-2 mb-2">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search users..." />
+            </div>
+        </div>
+
+        <table class="table table-hover" id="usersTable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#usersTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "searching": false,
+                "sorting": false,
+                "ajax": {
+                    "url": '@Url.Action("GetAll", "User")',
+                    "type": "GET",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.searchString = $('#searchInput').val();
+                        d.sortParam = $('#sortSelect').val();
+                    }
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "email" },
+                    { "data": "firstName" },
+                    { "data": "lastName" },
+                    {
+                        "data": null,
+                        "render": function(data, type, row) {
+                            return `
+                                <button class="btn btn-info send-friend-request" data-user-id="${row.id}">Friend Request</button>
+                            `;
+                        }
+                    }
+                ],
+            });
+            $('#searchInput, #sortSelect').on('change keyup', function () {
+                table.ajax.reload();
+            });
+        });
+        $(document).on('click', '.send-friend-request', function () {
+            var senderId = $(this).data('user-id');
+            var recipientId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+            var data = {
+                senderId: senderId,
+                recipientId: recipientId
+            };
+
+            $.ajax({
+                url: '@Url.Action("SendFriendRequest", "FriendRequest")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert(response);
+                },
+                error: function (xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        });
+    </script>
+}
