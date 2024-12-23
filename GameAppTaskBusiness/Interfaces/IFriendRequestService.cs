@@ -5,10 +5,11 @@ namespace GameAppTaskBusiness.Interfaces
 {
     public interface IFriendRequestService
     {
-        Task<IEnumerable<FriendRequestDto>> GetAllBySenderId(string id);
-        Task<IEnumerable<FriendRequestDto>> GetAllByRecipientId(string id);
-        Task<IEnumerable<FriendRequestDto>> GetFriendsBySenderId(string id);
-        Task<IEnumerable<FriendRequestDto>> GetRequestsBySenderId(string id);
+        Task<IEnumerable<FriendRequestDto>> GetAllBySenderId(string senderId);
+        Task<IEnumerable<FriendRequestDto>> GetAllByRecipientId(string senderId);
+        Task<IEnumerable<FriendRequestFullDto>> GetSubscriptionsBySenderId(string senderId);
+        Task<IEnumerable<FriendRequestDto>> GetSubscribersBySenderId(string senderId);
+        Task<IEnumerable<FriendRequestDto>> GetFriendsBySenderId(string senderId);
         Task<FriendRequestDto?> GetBySenderIdAndRecipientId(string senderId, string recipientId);
         Task<FriendRequestDto> SendFriendRequest(CreateFriendRequestDto dto);
         Task<FriendRequestDto> AcceptFriendRequest(string id);

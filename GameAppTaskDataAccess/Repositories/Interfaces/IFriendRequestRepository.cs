@@ -6,8 +6,9 @@ namespace GameAppTaskDataAccess.Repositories.Interfaces
     {
         Task<IEnumerable<FriendRequestModel>> GetAllBySenderId(Guid id);
         Task<IEnumerable<FriendRequestModel>> GetAllByRecipientId(Guid id);
+        Task<IEnumerable<FriendRequestModel>> GetSubscriptionsBySenderId(Guid id);
+        Task<IEnumerable<FriendRequestModel>> GetSubscribersBySenderId(Guid id);
         Task<IEnumerable<FriendRequestModel>> GetFriendsBySenderId(Guid id);
-        Task<IEnumerable<FriendRequestModel>> GetRequestsBySenderId(Guid id);
         Task<FriendRequestModel?> GetBySenderIdAndRecipientId(Guid senderId, Guid recipientId);
     }
 }

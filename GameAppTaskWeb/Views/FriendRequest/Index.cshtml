@@ -81,9 +81,9 @@
             });
         });
         $(document).on('click', '.send-friend-request', function () {
-            var senderId = $(this).data('user-id');
-            var recipientId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
-
+            var senderId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+            var recipientId = $(this).data('user-id');
+           
             var data = {
                 senderId: senderId,
                 recipientId: recipientId
