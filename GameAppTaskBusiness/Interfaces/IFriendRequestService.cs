@@ -8,8 +8,8 @@ namespace GameAppTaskBusiness.Interfaces
         Task<IEnumerable<FriendRequestDto>> GetAllBySenderId(string senderId);
         Task<IEnumerable<FriendRequestDto>> GetAllByRecipientId(string senderId);
         Task<IEnumerable<FriendRequestFullDto>> GetSubscriptionsBySenderId(string senderId);
-        Task<IEnumerable<FriendRequestDto>> GetSubscribersBySenderId(string senderId);
-        Task<IEnumerable<FriendRequestDto>> GetFriendsBySenderId(string senderId);
+        Task<IEnumerable<FriendRequestFullDto>> GetSubscribersBySenderId(string senderId);
+        Task<IEnumerable<FriendRequestFullDto>> GetFriendsBySenderId(string senderId);
         Task<FriendRequestDto?> GetBySenderIdAndRecipientId(string senderId, string recipientId);
         Task<FriendRequestDto> SendFriendRequest(CreateFriendRequestDto dto);
         Task<FriendRequestDto> AcceptFriendRequest(string id);

@@ -6,10 +6,6 @@
 
 <div class="d-flex flex-column justify-content-between">
     <div>
-        <div>
-            <a class="btn btn-primary" role="button" asp-area="" asp-controller="User" asp-action="Create">Create</a>
-        </div>
-
         <div class="d-flex justify-content-between">
             <div class="mt-2 mb-2">
                 <select id="sortSelect" class="form-control">
@@ -95,7 +91,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function (response) {
-                    alert(response);
+                    alert("success");
                 },
                 error: function (xhr) {
                     alert('Error: ' + xhr.responseText);

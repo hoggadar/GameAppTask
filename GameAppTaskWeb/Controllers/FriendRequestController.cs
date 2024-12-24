@@ -34,8 +34,9 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet("Subscriptions/{userId}")]
-        public async Task<IActionResult> SubscriptionsList(string userId)
+        public async Task<IActionResult> GetSubscriptionsList(string userId)
         {
+            _logger.LogInformation($"{userId}");
             var user = await _userService.GetById(userId);
             if (user == null) return BadRequest();
             var requests = await _friendRequestService.GetSubscriptionsBySenderId(user.Id);
@@ -43,7 +44,7 @@ namespace GameAppTaskWeb.Controllers
         }
 
         [HttpGet("Subscribers/{userId}")]
-        public async Task<IActionResult> SubscribersList(string userId)
+        public async Task<IActionResult> GetSubscribersList(string userId)
         {
             var user = await _userService.GetById(userId);
             if (user == null) return BadRequest();
@@ -51,26 +52,34 @@ namespace GameAppTaskWeb.Controllers
             return Json(requests);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> RequestList()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var requests = await _friendRequestService.GetRequestsBySenderId(userId!);
-        //    return View(requests);
-        //}
+        [HttpGet("Friends/{userId}")]
+        public async Task<IActionResult> GetFriendsList(string userId)
+        {
+            var user = await _userService.GetById(userId);
+            if (user == null) return BadRequest();
+            var requests = await _friendRequestService.GetFriendsBySenderId(user.Id);
+            return Json(requests);
+        }
 
         [HttpPost]
         public async Task<IActionResult> SendFriendRequest([FromBody] CreateFriendRequestDto dto)
         {
-            var createdFriendRequest = await _friendRequestService.SendFriendRequest(dto);
-            return Json(createdFriendRequest);
+            try
+            {
+                var createdFriendRequest = await _friendRequestService.SendFriendRequest(dto);
+                return Json(createdFriendRequest);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> AcceptFriendRequest(string id)
         {
-            await _friendRequestService.AcceptFriendRequest(id);
-            return Json(id);
+            var acceptedFriendRequest = await _friendRequestService.AcceptFriendRequest(id);
+            return Json(acceptedFriendRequest);
         }
     }
 }

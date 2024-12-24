@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Friend Requests";
+}
+
+<div class="container">
+    <h2>Friend Requests</h2>
+
+    <div class="mb-3 flex-row gap-2" role="group" aria-label="Friend request options">
+        <button type="button" class="btn btn-primary" id="btnSubscriptions">Subscriptions</button>
+        <button type="button" class="btn btn-primary" id="btnSubscribers">Subscribers</button>
+        <button type="button" class="btn btn-primary" id="btnFriends">Friends</button>
+    </div>
+
+    <table class="table table-hover" id="friendRequestsTable">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table;
+            var currentView = '';
+
+            function initializeDataTable() {
+                if ($.fn.DataTable.isDataTable('#friendRequestsTable')) {
+                    table.destroy();
+                }
+                if (currentView === "Subscribers") {
+                    table = $('#friendRequestsTable').DataTable({
+                        "processing": true,
+                        "serverSide": false,
+                        "columns": [
+                            { "data": "sender.id" },
+                            { "data": "sender.firstName" },
+                            { "data": "sender.lastName" },
+                            {
+                                "data": null,
+                                "render": function (data, type, row) {
+                                    return `<button class="btn btn-sm btn-success accept-friend" data-id="${row.id}">Accept</button>`;
+                                }
+                            }
+                        ],
+                        "language": {
+                            "emptyTable": "No data available"
+                        }
+                    });
+                } else {
+                    table = $('#friendRequestsTable').DataTable({
+                        "processing": true,
+                        "serverSide": false,
+                        "columns": [
+                            { "data": "recipient.id" },
+                            { "data": "recipient.firstName" },
+                            { "data": "recipient.lastName" },
+                            {
+                                "data": null,
+                                "render": function (data, type, row) {
+                                    return `<span>No Action</span>`;
+                                }
+                            }
+                        ],
+                        "language": {
+                            "emptyTable": "No data available"
+                        }
+                    });
+                }
+            }
+
+            function loadFriendRequests(url, viewType) {
+                currentView = viewType;
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data && Array.isArray(data)) {
+                            initializeDataTable();
+                            table.clear().rows.add(data).draw();
+                        } else {
+                            console.error("Invalid data format received:", data);
+                            $('#friendRequestsTable tbody').html('<tr><td colspan="4">No data available</td></tr>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching data:", error);
+                        $('#friendRequestsTable tbody').html('<tr><td colspan="4">Error loading data</td></tr>');
+                    }
+                });
+            }
+
+            $('#btnSubscriptions').click(function () {
+                loadFriendRequests('http://localhost:5197/Subscriptions/@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value', 'Subscriptions');
+            });
+
+            $('#btnSubscribers').click(function () {
+                loadFriendRequests('http://localhost:5197/Subscribers/@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value', 'Subscribers');
+            });
+
+            $('#btnFriends').click(function () {
+                loadFriendRequests('http://localhost:5197/Friends/@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value', 'Friends');
+            });
+
+            $('#btnSubscriptions').click();
+
+            $('#friendRequestsTable').on('click', '.accept-friend', function () {
+                var friendRequestId = $(this).data('id');
+                $.ajax({
+                    url: '@Url.Action("AcceptFriendRequest", "FriendRequest")/' + friendRequestId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#btnSubscribers').click();
+                        alert("Friend request accepted successfully!");
+                    },
+                    error: function (error) {
+                        console.error("Error accepting friend request:", error);
+                        alert("An error occurred while accepting the friend request. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -39,6 +39,8 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
         {
             var subscribers = await _context.Friends
                 .Where(p => p.RecipientId == senderId && p.IsAccepted == false)
+                .Include(p => p.Recipient)
+                .Include(p => p.Sender)
                 .ToListAsync();
             return subscribers;
         }
@@ -46,7 +48,9 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
         public async Task<IEnumerable<FriendRequestModel>> GetFriendsBySenderId(Guid senderId)
         {
             var friends = await _context.Friends
-                .Where(p => p.SenderId == senderId && p.IsAccepted == true)
+                .Where(p => (p.SenderId == senderId || p.RecipientId == senderId) && p.IsAccepted == true)
+                .Include(p => p.Recipient)
+                .Include(p => p.Sender)
                 .ToListAsync();
             return friends;
         }
@@ -55,6 +59,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
         {
             var friendRequests = await _context.Friends
                 .Where(p => p.SenderId == senderId && p.RecipientId == recipientId)
+                .Where(p => p.SenderId == recipientId && p.RecipientId == senderId)
                 .FirstOrDefaultAsync();
             return friendRequests;
         }

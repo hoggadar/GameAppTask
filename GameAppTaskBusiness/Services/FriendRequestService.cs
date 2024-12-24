@@ -56,7 +56,7 @@ namespace GameAppTaskBusiness.Services
             return _mapper.Map<IEnumerable<FriendRequestFullDto>>(subscriptions);
         }
 
-        public async Task<IEnumerable<FriendRequestDto>> GetSubscribersBySenderId(string senderId)
+        public async Task<IEnumerable<FriendRequestFullDto>> GetSubscribersBySenderId(string senderId)
         {
             if (!Guid.TryParse(senderId, out Guid parsedSenderId))
             {
@@ -65,10 +65,10 @@ namespace GameAppTaskBusiness.Services
                 throw new FormatException(message);
             }
             var subscribers = await _friendRequestRepo.GetSubscribersBySenderId(parsedSenderId);
-            return _mapper.Map<IEnumerable<FriendRequestDto>>(subscribers);
+            return _mapper.Map<IEnumerable<FriendRequestFullDto>>(subscribers);
         }
 
-        public async Task<IEnumerable<FriendRequestDto>> GetFriendsBySenderId(string senderId)
+        public async Task<IEnumerable<FriendRequestFullDto>> GetFriendsBySenderId(string senderId)
         {
             if (!Guid.TryParse(senderId, out Guid parsedSenderId))
             {
@@ -77,7 +77,7 @@ namespace GameAppTaskBusiness.Services
                 throw new FormatException(message);
             }
             var friends = await _friendRequestRepo.GetFriendsBySenderId(parsedSenderId);
-            return _mapper.Map<IEnumerable<FriendRequestDto>>(friends);
+            return _mapper.Map<IEnumerable<FriendRequestFullDto>>(friends);
         }
 
         public async Task<FriendRequestDto?> GetBySenderIdAndRecipientId(string senderId, string recipientId)
@@ -94,11 +94,23 @@ namespace GameAppTaskBusiness.Services
 
         public async Task<FriendRequestDto> SendFriendRequest(CreateFriendRequestDto dto)
         {
+            string message;
+            if (dto.SenderId == dto.RecipientId)
+            {
+                throw new ArgumentException("The sender's ID cannot be equal to the recipient's ID");
+            }
             if (!Guid.TryParse(dto.SenderId, out Guid parsedSenderId) || !Guid.TryParse(dto.RecipientId, out Guid parsedRecipientId))
             {
-                string message = $"Incorrect Guid format senderId: {dto.SenderId} or recipientId: {dto.RecipientId}";
+                message = $"Incorrect Guid format senderId: {dto.SenderId} or recipientId: {dto.RecipientId}";
                 _logger.LogWarning(message);
                 throw new FormatException(message);
+            }
+            var request = await _friendRequestRepo.GetBySenderIdAndRecipientId(parsedRecipientId, parsedSenderId);
+            if (request != null)
+            {
+                message = "Request already exists";
+                _logger.LogWarning(message);
+                throw new InvalidDataException(message);
             }
             var newFriendRequest = _mapper.Map<FriendRequestModel>(dto);
             newFriendRequest.Id = Guid.NewGuid();

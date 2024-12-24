@@ -35,7 +35,12 @@ namespace GameAppTaskWeb.Controllers
             return View(favourites);
         }
 
-        [Authorize]
+        [HttpGet]
+        public IActionResult FriendRequests()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> DeleteFromFavourite(string id)
         {
