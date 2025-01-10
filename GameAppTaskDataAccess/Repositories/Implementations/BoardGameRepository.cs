@@ -17,11 +17,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
             if (!string.IsNullOrWhiteSpace(title)) query = query.Where(p => p.Title.Contains(title));
             if (genre.HasValue) query = query.Where(p => p.Genre == genre);
             var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-            return new PaginatedResult<BoardGameModel>(items, pageSize, pageNumber, totalCount);
+            return await PaginatedResult<BoardGameModel>.CreateAsync(query, pageSize, pageNumber);
         }
 
         public async Task<IEnumerable<BoardGameModel>> GetAllByUserId(Guid id)

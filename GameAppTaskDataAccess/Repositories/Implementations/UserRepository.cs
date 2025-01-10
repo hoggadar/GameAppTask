@@ -38,12 +38,7 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
                     query = query.OrderBy(p => p.Email);
                     break;
             }
-            var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-            return new PaginatedResult<UserModel>(items, pageSize, pageNumber, totalCount);
+            return await PaginatedResult<UserModel>.CreateAsync(query, pageSize, pageNumber);
         }
     }
 }

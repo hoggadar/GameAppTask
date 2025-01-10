@@ -36,10 +36,9 @@ namespace GameAppTaskWeb.Controllers
         [HttpGet("Subscriptions/{userId}")]
         public async Task<IActionResult> GetSubscriptionsList(string userId)
         {
-            _logger.LogInformation($"{userId}");
             var user = await _userService.GetById(userId);
             if (user == null) return BadRequest();
-            var requests = await _friendRequestService.GetSubscriptionsBySenderId(user.Id);
+            var requests = await _friendRequestService.GetSubscriptionsByUserId(user.Id);
             return Json(requests);
         }
 
@@ -48,7 +47,7 @@ namespace GameAppTaskWeb.Controllers
         {
             var user = await _userService.GetById(userId);
             if (user == null) return BadRequest();
-            var requests = await _friendRequestService.GetSubscribersBySenderId(user.Id);
+            var requests = await _friendRequestService.GetSubscribersByUserId(user.Id);
             return Json(requests);
         }
 
@@ -57,7 +56,7 @@ namespace GameAppTaskWeb.Controllers
         {
             var user = await _userService.GetById(userId);
             if (user == null) return BadRequest();
-            var requests = await _friendRequestService.GetFriendsBySenderId(user.Id);
+            var requests = await _friendRequestService.GetFriendsByUserId(user.Id);
             return Json(requests);
         }
 

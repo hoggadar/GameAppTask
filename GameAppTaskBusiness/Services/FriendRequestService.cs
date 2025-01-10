@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameAppTaskBusiness.DTOs.FriendRequest;
+using GameAppTaskBusiness.DTOs.User;
 using GameAppTaskBusiness.Interfaces;
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Repositories.Interfaces;
@@ -20,76 +21,40 @@ namespace GameAppTaskBusiness.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<FriendRequestDto>> GetAllBySenderId(string id)
+        public async Task<IEnumerable<UserDto>> GetSubscriptionsByUserId(string userId)
         {
-            if (!Guid.TryParse(id, out Guid parsedId))
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
-                string message = $"Incorrect Guid format senderId: {id}";
+                string message = $"Incorrect Guid format recipientId: {userId}";
                 _logger.LogWarning(message);
                 throw new FormatException(message);
             }
-            var friendRequests = await _friendRequestRepo.GetAllBySenderId(parsedId);
-            return _mapper.Map<IEnumerable<FriendRequestDto>>(friendRequests);
+            var subscriptions = await _friendRequestRepo.GetSubscriptionsByUserId(parsedUserId);
+            return _mapper.Map<IEnumerable<UserDto>>(subscriptions);
         }
 
-        public async Task<IEnumerable<FriendRequestDto>> GetAllByRecipientId(string id)
+        public async Task<IEnumerable<UserDto>> GetSubscribersByUserId(string userId)
         {
-            if (!Guid.TryParse(id, out Guid parsedId))
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
-                string message = $"Incorrect Guid format recipientId: {id}";
+                string message = $"Incorrect Guid format recipientId: {userId}";
                 _logger.LogWarning(message);
                 throw new FormatException(message);
             }
-            var friendRequests = await _friendRequestRepo.GetAllByRecipientId(parsedId);
-            return _mapper.Map<IEnumerable<FriendRequestDto>>(friendRequests);
+            var subscribers = await _friendRequestRepo.GetSubscribersByUserId(parsedUserId);
+            return _mapper.Map<IEnumerable<UserDto>>(subscribers);
         }
 
-        public async Task<IEnumerable<FriendRequestFullDto>> GetSubscriptionsBySenderId(string senderId)
+        public async Task<IEnumerable<UserDto>> GetFriendsByUserId(string userId)
         {
-            if (!Guid.TryParse(senderId, out Guid parsedSenderId))
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
             {
-                string message = $"Incorrect Guid format recipientId: {senderId}";
+                string message = $"Incorrect Guid format recipientId: {userId}";
                 _logger.LogWarning(message);
                 throw new FormatException(message);
             }
-            var subscriptions = await _friendRequestRepo.GetSubscriptionsBySenderId(parsedSenderId);
-            return _mapper.Map<IEnumerable<FriendRequestFullDto>>(subscriptions);
-        }
-
-        public async Task<IEnumerable<FriendRequestFullDto>> GetSubscribersBySenderId(string senderId)
-        {
-            if (!Guid.TryParse(senderId, out Guid parsedSenderId))
-            {
-                string message = $"Incorrect Guid format recipientId: {senderId}";
-                _logger.LogWarning(message);
-                throw new FormatException(message);
-            }
-            var subscribers = await _friendRequestRepo.GetSubscribersBySenderId(parsedSenderId);
-            return _mapper.Map<IEnumerable<FriendRequestFullDto>>(subscribers);
-        }
-
-        public async Task<IEnumerable<FriendRequestFullDto>> GetFriendsBySenderId(string senderId)
-        {
-            if (!Guid.TryParse(senderId, out Guid parsedSenderId))
-            {
-                string message = $"Incorrect Guid format recipientId: {senderId}";
-                _logger.LogWarning(message);
-                throw new FormatException(message);
-            }
-            var friends = await _friendRequestRepo.GetFriendsBySenderId(parsedSenderId);
-            return _mapper.Map<IEnumerable<FriendRequestFullDto>>(friends);
-        }
-
-        public async Task<FriendRequestDto?> GetBySenderIdAndRecipientId(string senderId, string recipientId)
-        {
-            if (!Guid.TryParse(senderId, out Guid parsedSenderId) || !Guid.TryParse(recipientId, out Guid parsedRecipientId))
-            {
-                string message = $"Incorrect Guid format senderId: {senderId} or recipientId: {recipientId}";
-                _logger.LogWarning(message);
-                throw new FormatException(message);
-            }
-            var friendRequest = await _friendRequestRepo.GetBySenderIdAndRecipientId(parsedSenderId, parsedRecipientId);
-            return _mapper.Map<FriendRequestDto>(friendRequest);
+            var friends = await _friendRequestRepo.GetFriendsByUserId(parsedUserId);
+            return _mapper.Map<IEnumerable<UserDto>>(friends);
         }
 
         public async Task<FriendRequestDto> SendFriendRequest(CreateFriendRequestDto dto)

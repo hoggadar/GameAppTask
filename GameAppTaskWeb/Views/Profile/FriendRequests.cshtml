@@ -37,45 +37,25 @@
                 if ($.fn.DataTable.isDataTable('#friendRequestsTable')) {
                     table.destroy();
                 }
-                if (currentView === "Subscribers") {
-                    table = $('#friendRequestsTable').DataTable({
-                        "processing": true,
-                        "serverSide": false,
-                        "columns": [
-                            { "data": "sender.id" },
-                            { "data": "sender.firstName" },
-                            { "data": "sender.lastName" },
-                            {
-                                "data": null,
-                                "render": function (data, type, row) {
-                                    return `<button class="btn btn-sm btn-success accept-friend" data-id="${row.id}">Accept</button>`;
-                                }
+
+                table = $('#friendRequestsTable').DataTable({
+                    "processing": true,
+                    "serverSide": false,
+                    "columns": [
+                        { "data": "id" },
+                        { "data": "firstName" },
+                        { "data": "lastName" },
+                        {
+                            "data": null,
+                            "render": function (data, type, row) {
+                                return `<span>Friend</span>`;
                             }
-                        ],
-                        "language": {
-                            "emptyTable": "No data available"
                         }
-                    });
-                } else {
-                    table = $('#friendRequestsTable').DataTable({
-                        "processing": true,
-                        "serverSide": false,
-                        "columns": [
-                            { "data": "recipient.id" },
-                            { "data": "recipient.firstName" },
-                            { "data": "recipient.lastName" },
-                            {
-                                "data": null,
-                                "render": function (data, type, row) {
-                                    return `<span>No Action</span>`;
-                                }
-                            }
-                        ],
-                        "language": {
-                            "emptyTable": "No data available"
-                        }
-                    });
-                }
+                    ],
+                    "language": {
+                        "emptyTable": "No friends available"
+                    }
+                });
             }
 
             function loadFriendRequests(url, viewType) {

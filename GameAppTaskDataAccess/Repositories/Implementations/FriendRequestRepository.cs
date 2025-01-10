@@ -2,6 +2,7 @@
 using GameAppTaskDataAccess.Models;
 using GameAppTaskDataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
 
 namespace GameAppTaskDataAccess.Repositories.Implementations
 {
@@ -9,49 +10,41 @@ namespace GameAppTaskDataAccess.Repositories.Implementations
     {
         public FriendRequestRepository(AppDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<FriendRequestModel>> GetAllBySenderId(Guid senderId)
-        {
-            var friendRequests = await _context.Friends
-                .Where(p => p.SenderId == senderId)
-                .ToListAsync();
-            return friendRequests;
-        }
-
-        public async Task<IEnumerable<FriendRequestModel>> GetAllByRecipientId(Guid recipientId)
-        {
-            var friendRequests = await _context.Friends
-                .Where(p => p.RecipientId == recipientId)
-                .ToListAsync();
-            return friendRequests;
-        }
-
-        public async Task<IEnumerable<FriendRequestModel>> GetSubscriptionsBySenderId(Guid senderId)
+        public async Task<IEnumerable<UserModel>> GetSubscriptionsByUserId(Guid userId)
         {
             var subscriptions = await _context.Friends
-                .Where(p => p.SenderId == senderId && p.IsAccepted == false)
-                .Include(p => p.Recipient)
-                .Include(p => p.Sender)
+                .Where(fr => fr.SenderId == userId && !fr.IsAccepted)
+                .Include(fr => fr.Recipient)
+                .Select(fr => fr.Recipient)
+                .Distinct()
                 .ToListAsync();
             return subscriptions;
         }
 
-        public async Task<IEnumerable<FriendRequestModel>> GetSubscribersBySenderId(Guid senderId)
+        public async Task<IEnumerable<UserModel>> GetSubscribersByUserId(Guid userId)
         {
             var subscribers = await _context.Friends
-                .Where(p => p.RecipientId == senderId && p.IsAccepted == false)
-                .Include(p => p.Recipient)
-                .Include(p => p.Sender)
+                .Where(fr => fr.RecipientId == userId && !fr.IsAccepted)
+                .Include(fr => fr.Sender)
+                .Select(fr => fr.Sender)
                 .ToListAsync();
             return subscribers;
         }
 
-        public async Task<IEnumerable<FriendRequestModel>> GetFriendsBySenderId(Guid senderId)
+        public async Task<IEnumerable<UserModel>> GetFriendsByUserId(Guid userId)
         {
-            var friends = await _context.Friends
-                .Where(p => (p.SenderId == senderId || p.RecipientId == senderId) && p.IsAccepted == true)
-                .Include(p => p.Recipient)
-                .Include(p => p.Sender)
+            var friendRequests = await _context.Friends
+                .Where(fr => (fr.SenderId == userId || fr.RecipientId == userId) && fr.IsAccepted)
+                .Include(fr => fr.Sender)
+                .Include(fr => fr.Recipient)
                 .ToListAsync();
+
+            var friends = friendRequests
+                .SelectMany(fr => new[] { fr.Sender, fr.Recipient })
+                .Where(u => u.Id != userId)
+                .DistinctBy(u => u.Id)
+                .ToList();
+
             return friends;
         }
 

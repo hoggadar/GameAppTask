@@ -34,8 +34,7 @@ namespace GameAppTaskBusiness.Services
         public async Task<PaginatedResult<UserDto>> GetAllByParams(string email, string sortParam, int pageIndex, int pageSize)
         {
             var paginatedResult = await _userRepo.GetAllByParams(email, sortParam, pageIndex, pageSize);
-            var users = _mapper.Map<IEnumerable<UserDto>>(paginatedResult.Items);
-            return new PaginatedResult<UserDto>(users, pageSize, pageIndex, paginatedResult.TotalCount);
+            return _mapper.Map<PaginatedResult<UserDto>>(paginatedResult);
         }
 
         public async Task<UserDto> GetById(string id)
